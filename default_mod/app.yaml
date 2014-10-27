@@ -1,4 +1,5 @@
 application: arbitration-ks
+module: default
 version: dev-10-26
 runtime: python27
 threadsafe: true

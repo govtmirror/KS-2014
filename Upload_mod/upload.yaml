@@ -1,5 +1,6 @@
-application: the-option-328
-version: dev-10-24-2
+application: arbitration-ks
+module: upload
+version: dev-10-26
 runtime: python27
 threadsafe: true
 api_version: 1

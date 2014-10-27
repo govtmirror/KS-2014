@@ -16,26 +16,19 @@
 """Defines the routing for the app's non-admin handlers.
 """
 
-from searchserver import *
 from uploadrest import *
 from upqueue import *
 import webapp2
 
 """handlers for client redirects"""
-class SearchHandler(webapp2.RequestHandler):
-  def get(self):
-  	self.redirect("ks/search.html")
-
 class UploadHandler(webapp2.RequestHandler):
   def get(self):
   	self.redirect("ks/upload.html")
 
 
 app = webapp2.WSGIApplication(
-    [('/', SearchHandler),
-    ('/u', UploadHandler),
+    [('/', UploadHandler),
     ('/uploadaward', PostAwardHandler),
-    ('/upqueue', UpQueueHandler),
-    ('/kssearch', KSSearch)
+    ('/upqueue', UpQueueHandler)
     ],
     debug=True)
