@@ -3947,7 +3947,7 @@ polyfill-next-selector { content: ':host > *:not(.core-selected):not([animate])'
 		<div class="formbox">
 			<h3>Decision</h3>
 			<form name="awardform" action="/uploadaward" method="POST" enctype="multipart/form-data">	
-				<input type="hidden" name="doctype" value="award">
+				<input type="hidden" name="doctype" value="decision">
 				<div>
 					Upload File: <br>
 					<input type="file" name="file"><br>
@@ -4023,7 +4023,7 @@ polyfill-next-selector { content: ':host > *:not(.core-selected):not([animate])'
 		<div class="formbox">
 			<h3>PEB</h3>
 			<form name="awardform" action="/uploadaward" method="POST" enctype="multipart/form-data">	
-				<input type="hidden" name="doctype" value="award">
+				<input type="hidden" name="doctype" value="peb">
 				<div>
 					Upload File: <br>
 					<input type="file" name="file"><br>
@@ -4101,14 +4101,12 @@ polyfill-next-selector { content: ':host > *:not(.core-selected):not([animate])'
 				<paper-radio-button name="peb" label="peb"></paper-radio-button>
 			</paper-radio-group>
 		</div>
-		
-			<core-animated-pages id="mainpage" selected="0" transitions="cross-fade-all">
-				<div><h3 class="contentbox">Select a document type.</h3></div>
-				<ks-upload-awardview></ks-upload-awardview>
-				<ks-upload-decisionview></ks-upload-decisionview>
-				<ks-upload-pebview></ks-upload-pebview>
-			</core-animated-pages>
-		
+		<core-animated-pages id="mainpage" selected="0" transitions="cross-fade-all">
+			<div><h3 class="contentbox">Select a document type.</h3></div>
+			<ks-upload-awardview></ks-upload-awardview>
+			<ks-upload-decisionview></ks-upload-decisionview>
+			<ks-upload-pebview></ks-upload-pebview>
+		</core-animated-pages>
 	</template>
 
 	<script>
