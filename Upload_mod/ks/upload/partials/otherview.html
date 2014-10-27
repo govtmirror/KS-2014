@@ -1,0 +1,45 @@
+
+<div class="upload-form">
+	<script type="text/javascript">
+		var goforit = function () {
+			document.getElementById("loading").className = "loadinggif-show";
+		}
+	</script>
+	<h3>Other Records</h3>
+	<form name="otherform" class="form-horizontal" action="/uploadaward" method="POST" enctype="multipart/form-data" onsubmit="goforit();">	
+		<input type="hidden" name="doctype" value="other" />
+		<div class="row">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-5">
+				<div>
+					Upload File: </br>
+					<input type="file" name="file"><br>
+				</div>
+						
+				<div class="form-group">
+					<label for="docdate" class="col-lg-4 control-label">Document Date</label>
+					<div>
+						<input type="text" id="docdate" name="docdate" placeholder="yyyy-m-d"
+						 pattern="[12][0-9]{3}-[01]?[0-9]-[0123]?[0-9]" required>
+						
+					</div>
+				</div>
+				<div>
+					<input type="submit" value="Submit Other Document" class="btn-primary"> </br></br>
+				</div>	
+
+				<div class="form-group">
+					<label for="doctext" class="col-lg-2 control-label">Document Text</label>
+					<div>
+						<textarea id="doctext" rows="20" cols="80" name="doctext" required></textarea>
+						<span class="error" ng-show="otherform.input.$error.required">Required</span>
+					</div>
+				</div>
+			</div>	
+			<div class="col-lg-6"></div>
+		</div>
+	</form>
+	<div id="loading" class="loadinggif-hidden">
+			<img src="img/ajax_loader_green_128.gif" class="loadimg">
+	</div>
+</div>

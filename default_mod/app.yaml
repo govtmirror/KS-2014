@@ -1,0 +1,12 @@
+application: arbitration-ks
+version: dev-10-26
+runtime: python27
+threadsafe: true
+api_version: 1
+
+handlers:
+- url: /ks
+  static_dir: ks
+
+- url: .*
+  script: main.app

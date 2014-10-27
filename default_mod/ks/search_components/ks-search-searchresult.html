@@ -1,0 +1,41 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="ks-search-searchresult" attributes="result bucket">
+	<template>
+		<style>
+			.docresult {
+			  border-radius: 10px;
+			  background-color: #ddddff;
+			  padding: 10px;
+			}
+		</style>
+		<hr>
+		<div class="docresult">
+			<p>
+				doctype: {{result.doctype}}<br/>
+				Board: {{result.boardtype}}-{{result.boardnumber}}<br/>
+				Award Number: {{result.awardnumber}}<br/>
+				Arbitrator: {{result.arbitrator}}<br/>
+				Carriers: {{result.carriers}}<br/>
+				Unions: {{result.unions}}<br/>
+				Crafts: {{result.crafts}}<br/>
+				Date: {{result.docdate}}<br/>
+				Link: 
+				<a href="http://storage.googleapis.com/{{parsedLink}}" 
+						target="_blank">File Link
+				</a>
+				text:<br/>
+			</p>
+			<p class="textsnippet" ng-bind-html-unsafe="result.doctext">ho</p>
+		</div>
+	</template>
+	<script>
+		Polymer('ks-search-searchresult',{
+			domReady: function () {
+				var parseResult = this.result.link.split("/");
+			    var lastIndex = parseResult.length - 1;
+			    this.parsedLink = this.bucket + "/" + parseResult[lastIndex];
+			}
+		});
+	</script>
+</polymer-element>

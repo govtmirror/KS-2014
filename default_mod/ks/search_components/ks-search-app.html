@@ -1,0 +1,279 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-input/core-input.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="ks-search-searchresult.html">
+
+<polymer-element name="ks-search-app">
+	<template>
+		<style>
+			img {
+				width: 80px;
+				height: 80px;
+			}
+			#header {
+				/*height: 120px;*/
+			}
+			.contentbox {
+				margin: 20px;
+				border-radius: 10px;
+				background-color: #77bbff;
+				padding: 10px;
+			}
+			.formbox{
+				background-color: #ddd;
+				margin: 10px;
+				padding: 25px;
+			}
+			core-input {
+				background-color: #eee;
+				width: 100%;
+			}
+			paper-button.colored {
+		      color: #4285f4;
+		      fill: #4285f4;
+		    }
+
+		    paper-button[raisedButton].colored {
+		      background: #4285f4;
+		      color: #fff;
+		    }
+		    paper-button[raisedButton].colored.hover:hover {
+		      background: #3367d6;
+		    }
+		    paper-button[raisedButton].colored::shadow #ripple {
+		      color: #2a56c6;
+		    }
+		    paper-button[raisedButton].colored::shadow #focusBg {
+		      background: #3367d6;
+		    }
+		</style>
+		<core-ajax
+			id="postSearch"
+			url="/kssearch"
+			method="POST"
+			handleAs="json"
+			response="{{ajaxResponse}}"
+			on-core-response="{{handleResponse}}"
+			on-core-error="{{handleError}}">
+		</core-ajax>
+		<div id="header" class="contentbox" horizontal layout wrap>
+			<img src="../img/NMB_logo.png" width="100px" hieght="100px">
+			<h1>&nbsp;&nbsp;NMB Knowledge Store Search Form 4</h1>
+		</div>
+
+		<div class="contentbox">
+			<div center horizontal layout wrap>
+				<paper-button 
+						on-tap="{{doSearch}}" 
+						raisedButton 
+						class="colored" 
+						label="Search Now">
+				</paper-button>
+		    </div>
+			<hr>
+			<div class="formcontainer" horizontal layout wrap>
+			    <div class="formbox" vertical layout>
+			    	<span>
+			    		Keywords:&nbsp;&nbsp;
+						<core-input id="keywords" placeholder="Type keywords"></core-input>
+					</span><br>
+					
+					<span>
+			    		Board Number:&nbsp;&nbsp;
+						<core-input id="boardnumber" placeholder="Type a board number"></core-input>
+					</span><br>
+					<span>
+			    		Award Number:&nbsp;&nbsp;
+						<core-input id="awardnumber" placeholder="Type an award number"></core-input>
+					</span>
+				</div>
+				<div class="formbox" vertical layout>
+					<span>
+			    		Union:&nbsp;&nbsp;
+						<core-input id="unions" placeholder="Type unions"></core-input>
+					</span><br>
+					<span>
+			    		Carrier:&nbsp;&nbsp;
+						<core-input id="carriers" placeholder="Type carriers"></core-input>
+					</span><br>
+					<span>
+			    		Craft:&nbsp;&nbsp;
+						<core-input id="crafts" placeholder="Type crafts"></core-input>
+					</span>
+				</div>
+				<div class="formbox" vertical layout>
+					<div center horizontal layout >
+						<paper-checkbox id="awards"></paper-checkbox> 
+						&nbsp;&nbsp;
+						<h4>Awards</h4>
+					</div>
+					<div center horizontal layout>
+						<paper-checkbox id="decisions"></paper-checkbox> 
+						&nbsp;&nbsp;
+						<div><h4>Decisions</h4></div>
+					</div>
+					<div center horizontal layout>
+						<paper-checkbox id="pebs"></paper-checkbox> 
+						&nbsp;&nbsp;
+						<h4>P.E.Bs</h4>
+					</div>
+				</div>
+				<div class="formbox" vertical layout>
+					<div center horizontal layout>
+						<paper-checkbox id="contracts"></paper-checkbox> 
+						&nbsp;&nbsp;
+						<h4>Contracts</h4>
+					</div>
+					<div center horizontal layout>
+						<paper-checkbox id="others"></paper-checkbox>
+						&nbsp;&nbsp; 
+						<h4>Others</h4>
+					</div>
+			    </div>
+			    
+			    
+		    </div> 
+		    <!-- end of form -->
+		  </div>
+		  <div class="contentbox">
+		  	<paper-button 
+					on-tap="{{prevPage}}" 
+					raisedButton 
+					class="colored" 
+					label="Prev. Page">
+			</paper-button>
+			<paper-button 
+					on-tap="{{nextPage}}" 
+					raisedButton 
+					class="colored" 
+					label="Next Page">
+			</paper-button>
+			currently displaying from page {{currentPage + 1}}, responses = {{num_of_matches}}
+			<template repeat="{{result in results}}">
+				<ks-search-searchresult 
+						result="{{result}}" 
+						bucket="{{bucket}}"
+						class="resultform">
+				</ks-search-searchreult>
+			</template>
+		  </div>
+	</template>
+
+	<script>
+		Polymer('ks-search-app', {
+			limit: 20,
+ 			currentPage: 0,
+ 			showLoading: false,
+ 			num_of_matches: 0,
+ 			queryString: "",
+ 			bucket: "",
+			domReady: function () {
+				this.results = this.results || [];
+			},
+			doSearch: function() {
+				// alert("hey");
+				this.currentPage = 0,
+				this.results = [];
+				this.ksSearch();
+			},
+			prevPage: function() {
+				// alert("prev");
+				this.currentPage--;
+    			if (this.currentPage < 0 ) {
+      				this.currentPage = 0;
+      				alert("You are in the first page");
+    			}
+    			this.ksSearch();
+			},
+			nextPage: function() {
+				// alert("next");
+				this.currentPage++;
+    			if ((this.currentPage * this.limit) > this.num_of_matches) {
+      				this.currentPage--;
+      				alert("You have reached the end of the search results");
+    			} else {
+    				this.ksSearch();
+    			}
+			},
+			ksSearch: function() {
+				// alert("in search");
+				var offset = this.currentPage * this.limit;
+				
+
+
+
+			    // assemble the querystring
+			    var querystring = "";
+
+			    if (this.$.keywords.value != null & this.$.keywords.value != "") {
+			      querystring = querystring + this.$.keywords.value;
+			    }
+			    if (this.$.unions.value != null & this.$.unions.value != "") {
+			      querystring = querystring + " unions:" + this.$.unions.value;
+			    }
+			    if (this.$.carriers.value != null & this.$.carriers.value != "") {
+			      querystring = querystring + " carriers:" + this.$.carriers.value;
+			    }
+			    if (this.$.crafts.value != null & this.$.crafts.value != "") {
+			      querystring = querystring + " crafts:" + this.$.crafts.value;
+			    }
+			    if (this.$.boardnumber.value != null & this.$.boardnumber.value != "") {
+			      querystring = querystring + " boardnumber:" + this.$.boardnumber.value;
+			    }
+			    if (this.$.awardnumber.value != null & this.$.awardnumber.value != "") {
+			      querystring = querystring + " awardnumber:" + this.$.awardnumber.value;
+			    }
+
+			    if (this.$.awards.checked | 
+			      this.$.decisions.checked |
+			      this.$.pebs.checked |
+			      this.$.contracts.checked |
+			      this.$.others.checked) {
+			        querystring = querystring + " doctype:(";
+			        if (this.$.awards.checked) {
+			          querystring = querystring + " award OR";
+			        }
+			        if (this.$.decisions.checked) {
+			          querystring = querystring + " decision OR";
+			        }
+			        if (this.$.pebs.checked) {
+			          querystring = querystring + " peb OR";
+			        }
+			        if (this.$.contracts.checked) {
+			          querystring = querystring + " contract OR";
+			        }
+			        if (this.$.others.checked) {
+			          querystring = querystring + " other OR";
+			        }
+			        querystring = querystring + " xxx )";
+			    }
+
+			    console.log("in the doMeeting " + querystring);
+
+				var paramStr = {
+					'queryString': querystring,
+					'offset': offset,
+					'limit':this.limit
+				};
+				this.$.postSearch.body = JSON.stringify(paramStr);
+				this.$.postSearch.go();
+			},
+			handleResponse: function () {
+				//this.results = [{"doctype":"I dont care"}]; //this.ajaxResponse.results;
+				this.bucket = this.ajaxResponse.bucket;
+				this.results = this.ajaxResponse.ksresults;
+				//alert("what?");
+				this.msg = this.ajaxResponse.msg;
+				this.num_of_matches = this.ajaxResponse.num_of_matches;
+				
+				// this.$.toastSuccess.show();
+			},
+			handleError: function () {
+				// this.$.toastError.show();
+			}
+		});
+	</script>
+
+</polymer-element>

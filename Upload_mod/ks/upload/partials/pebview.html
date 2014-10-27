@@ -1,0 +1,96 @@
+
+<div class="upload-form">
+	<script type="text/javascript">
+		var goforit = function () {
+			document.getElementById("loading").className = "loadinggif-show";
+		}
+	</script>
+	<h3>Presidential Emergency Boards</h3>
+	<form name="pebform" class="form-horizontal" action="/uploadaward" method="POST" enctype="multipart/form-data" onsubmit="goforit();">	
+		<input type="hidden" name="doctype" value="peb" />
+		
+		<div class="row">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-5">
+				<div>
+					Upload File: </br>
+					<input type="file" name="file"><br>
+				</div>
+				
+				<div class="form-group">
+					<label for="pebnumber" class="col-lg-4 control-label">PEB Number</label>
+					<div>
+						<input type="text" id="pebnumber" name="pebnumber" required>
+						<span class="error" ng-show="pebform.input.$error.required">Required</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="docdate" class="col-lg-4 control-label">Document Date</label>
+					<div>
+						<input type="text" id="docdate" name="docdate" placeholder="yyyy-m-d"
+						 pattern="[12][0-9]{3}-[01]?[0-9]-[0123]?[0-9]" required>
+						
+					</div>
+				</div>
+				<!-- <div class="form-group">
+					<label for="link" class="col-lg-4 control-label">Link</label>
+					<div>
+						<input type="text" id="link" ng-model="newpeb.link" required>
+						<span class="error" ng-show="pebform.input.$error.required">Required</span>
+					</div>
+				</div> -->
+			</div>
+		
+
+
+		
+			<div class="col-lg-5">
+				<div>
+					<input type="submit" value="Submit PEB" class="btn-primary"> </br></br>
+				</div>
+				
+				<div class="form-group">
+					<label for="carriers" class="col-lg-4 control-label">Carrier(s)</label>
+					<div>
+						<input type="text" id="carriers" name="carriers">
+						
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="unions" class="col-lg-4 control-label">Union(s)</label>
+					<div>
+						<input type="text" id="unions" name="unions">
+						
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="parties" class="col-lg-4 control-label">Party(ies)</label>
+					<div>
+						<input type="text" id="parties" name="parties">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="crafts" class="col-lg-4 control-label">craft(s)</label>
+					<div>
+						<input type="text" id="crafts" name="crafts">
+						
+					</div>
+				</div>
+				
+			</div>
+			<div class="col-lg-1"></div>
+		</div>
+
+
+		<div class="form-group">
+			<label for="doctext" class="col-lg-2 control-label">Document Text</label>
+			<div>
+				<textarea id="doctext" rows="20" cols="80" name="doctext" required></textarea>
+				<span class="error" ng-show="pebform.input.$error.required">Required</span>
+			</div>
+		</div>
+	</form>
+	<div id="loading" class="loadinggif-hidden">
+			<img src="img/ajax_loader_green_128.gif" class="loadimg">
+	</div>
+</div>
