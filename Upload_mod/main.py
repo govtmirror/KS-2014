@@ -23,7 +23,8 @@ import webapp2
 """handlers for client redirects"""
 class UploadHandler(webapp2.RequestHandler):
   def get(self):
-  	self.redirect("ks/upload.html")
+  	# self.redirect("ks/upload.html")
+  	self.redirect("ks/build.html")
 
 
 app = webapp2.WSGIApplication(

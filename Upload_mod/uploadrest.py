@@ -25,6 +25,7 @@ from google.appengine.ext import blobstore
 import nmbcfg
 import cloudstorage as gcs
 import time
+import logging
 
 
 _INDEX_NAME = nmbcfg.med_prog_index
@@ -60,6 +61,7 @@ class PostAwardHandler(webapp2.RequestHandler):
 
     for arg in keys:
       if arg != "file":
+        logging.info("found and arg = " + arg)
         value = self.request.get(arg)
         myFields[arg] = value
 
@@ -71,7 +73,7 @@ class PostAwardHandler(webapp2.RequestHandler):
       params=myFields
       )
 
-    self.redirect('/u')
+    self.redirect('/')
 
 
 # class PostPebHandler(webapp2.RequestHandler):

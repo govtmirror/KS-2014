@@ -1,12 +1,62 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
+<link rel="import" href="ks-upload-awardview.html">
+<link rel="import" href="ks-upload-decisionview.html">
+<link rel="import" href="ks-upload-pebview.html">
+
 
 <polymer-element name="ks-upload-app">
 	<template>
-		<h2>Upload</h2>
+		<style>
+			img {
+				width: 80px;
+				height: 80px;
+			}
+			#header {
+				/*height: 120px;*/
+			}
+			.contentbox {
+				margin: 20px;
+				border-radius: 10px;
+				background-color: #77bbff;
+				padding: 10px;
+			}
+		</style>
+		<div id="header" class="contentbox" horizontal layout wrap>
+			<img src="../img/NMB_logo.png" width="100px" hieght="100px">
+			<h1>&nbsp;&nbsp;NMB Knowledge Store Search Form</h1>
+		</div>
+		<div class="contentbox">
+			<paper-radio-group id="doctypeSelector" on-core-select="{{selectAction}}">
+				<paper-radio-button name="award" label="award"></paper-radio-button>
+				<paper-radio-button name="decision" label="decision"></paper-radio-button>
+				<paper-radio-button name="peb" label="peb"></paper-radio-button>
+			</paper-radio-group>
+		</div>
+		<core-animated-pages 
+				id="mainpage" 
+				selected="0" 
+				transitions="cross-fade-all">
+			<div ><h3 class="contentbox">Select a document type.</h3></div>
+			<ks-upload-awardview></ks-upload-awardview>
+			<ks-upload-decisionview></ks-upload-decisionview>
+			<ks-upload-pebview></ks-upload-pebview>
+		</core-animated-pages>
 	</template>
 
 	<script>
-		Polymer('ks-upload-app');
+		Polymer('ks-upload-app', {
+			selectAction: function(e, detail) {
+				var mItem = detail.item.label
+				var p = this.$.mainpage;
+				if (mItem == "award") {p.selected = 1;}
+				else if (mItem == "decision") {p.selected = 2;}
+				else if (mItem == "peb") {p.selected = 3;}
+				else {p.selected = 0}
+			}
+		});
 	</script>
 
 </polymer-element>
