@@ -17,6 +17,6 @@
 	</style>
 </head>
 <body>
-	<ks-upload-app csrf="abc123"></ks-upload-app>
+	<ks-upload-app csrf_token="{% endraw %}{{ csrf_token() }}{% raw %}"></ks-upload-app>
 </body>
 </html>

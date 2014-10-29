@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<polymer-element name="ks-upload-decisionview">
+<polymer-element name="ks-upload-decisionview" attributes="csrf_token">
 	<template>
 		<style>
 			.formbox{
@@ -15,7 +15,8 @@
 		</style>
 		<div class="formbox">
 			<h3>Decision</h3>
-			<form name="awardform" action="/uploadaward" method="POST" enctype="multipart/form-data">	
+			<form name="awardform" action="/uploadaward" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">	
 				<input type="hidden" name="doctype" value="decision" />
 				<div>
 					Upload File: </br>
