@@ -1,6 +1,6 @@
 application: arbitration-ks
 module: upload
-version: dev-10-29
+version: dev-10-30
 runtime: python27
 threadsafe: true
 api_version: 1
