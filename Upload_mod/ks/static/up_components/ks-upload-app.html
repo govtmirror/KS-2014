@@ -7,7 +7,7 @@
 <link rel="import" href="ks-upload-pebview.html">
 
 
-<polymer-element name="ks-upload-app">
+<polymer-element name="ks-upload-app" attributes="csrf_token">
 	<template>
 		<style>
 			img {
@@ -40,7 +40,7 @@
 				selected="0" 
 				transitions="cross-fade-all">
 			<div ><h3 class="contentbox">Select a document type.</h3></div>
-			<ks-upload-awardview></ks-upload-awardview>
+			<ks-upload-awardview csrf_token={{csrf_token}}></ks-upload-awardview>
 			<ks-upload-decisionview></ks-upload-decisionview>
 			<ks-upload-pebview></ks-upload-pebview>
 		</core-animated-pages>
