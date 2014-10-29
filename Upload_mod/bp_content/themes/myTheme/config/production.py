@@ -28,4 +28,8 @@ config = {
     # webapp2 authentication
     'webapp2_extras.auth': { 'user_model': 'bp_includes.models.User',
                             'cookie_name': 'gae_session' },
+          
+    # get your own recaptcha keys by registering at http://www.google.com/recaptcha/
+    'captcha_public_key': "6Ldo2fwSAAAAAB4e3uKTRw69jBS4JiOf7e85pBG0",
+    'captcha_private_key': "6Ldo2fwSAAAAAH9VP_7_hGDiOS8vbWpzK44e7-nN",
 }
