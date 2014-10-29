@@ -27,13 +27,17 @@ import cloudstorage as gcs
 import time
 import logging
 
+from bp_includes.lib.decorators import user_permission_required
+from bp_includes.lib.basehandler import BaseHandler
+
 
 _INDEX_NAME = nmbcfg.med_prog_index
 BUCKET_NAME = nmbcfg.med_prog_bucket
 
-class PostAwardHandler(webapp2.RequestHandler):
+class PostAwardHandler(BaseHandler):
   """returns a JSON string"""
-  
+
+  @user_permission_required("can_upload")  
   def post(self):
 
     fileitem = self.request.POST['file']

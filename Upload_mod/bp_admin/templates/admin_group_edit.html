@@ -1,0 +1,10 @@
+{% extends 'admin_base.html' %}
+
+{% block header_title %}
+  {% trans %}Group Details{% endtrans %}
+{% endblock %}
+
+{% block content %}
+
+  {{ lib.render_form(form, uri_for('admin-groups-list'), btn='Update') }}
+{% endblock %}

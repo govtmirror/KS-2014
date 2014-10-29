@@ -13,23 +13,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Defines the routing for the app's non-admin handlers.
-"""
 
+
+import os
+import sys
+# Third party libraries path must be fixed before importing webapp2
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'bp_includes/external'))
+
+#from search import *
 from uploadrest import *
-from upqueue import *
+#from textextract import *
+
+#from docProcessor.views import uploadToBlobstore
+#from docProcessor.views import documentUploadPost  
+#from docProcessor.views import documentServe
+
 import webapp2
 
-"""handlers for client redirects"""
-class UploadHandler(webapp2.RequestHandler):
-  def get(self):
-  	# self.redirect("ks/upload.html")
-  	self.redirect("ks/build.html")
+
+from bp_includes.lib.error_handler import handle_error
+from bp_includes import config as config_boilerplate
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'bp_content/themes/', os.environ['theme']))
+
+logging.info(sys.path)
+
+# Import Config Importing
+import config as config_theme
+
+# Routes Importing
+from bp_admin import routes as routes_admin
+from bp_includes import routes as routes_boilerplate
+import routes as routes_theme
+from ks import myRoutes
 
 
-app = webapp2.WSGIApplication(
-    [('/', UploadHandler),
-    ('/uploadaward', PostAwardHandler),
-    ('/upqueue', UpQueueHandler)
-    ],
-    debug=True)
+webapp2_config = config_boilerplate.config
+webapp2_config.update(config_theme.config)
+
+app = webapp2.WSGIApplication(debug=os.environ['SERVER_SOFTWARE'].startswith('Dev'), config=webapp2_config)
+
+if not app.debug:
+    for status_int in app.config['error_templates']:
+        app.error_handlers[status_int] = handle_error
+
+myRoutes.add_routes(app)
+routes_theme.add_routes(app)
+routes_boilerplate.add_routes(app)
+routes_admin.add_routes(app)

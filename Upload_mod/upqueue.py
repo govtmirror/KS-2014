@@ -24,6 +24,8 @@ import nmbcfg
 import cloudstorage as gcs
 import time
 
+import logging
+
 import pdf_miner_app_engine as pdf_miner
 
 _INDEX_NAME = nmbcfg.med_prog_index
@@ -47,8 +49,11 @@ class UpQueueHandler(webapp2.RequestHandler):
 		myFields = []
 
 		for arg in keys:
-			if arg != "doctext":
+
+			if arg != "doctext" and arg!= "_csrf_token":
 				value = self.request.get(arg)
+				logging.info("upqueuehandler arg=%s" % arg)
+				logging.info("value=%s" % value)
 				newField = search.TextField(name=arg, value=value)
 				myFields.append(newField)
 
