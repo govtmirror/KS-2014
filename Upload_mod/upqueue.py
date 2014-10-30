@@ -26,7 +26,7 @@ import time
 
 import logging
 
-import pdf_miner_app_engine as pdf_miner
+from fileTextExtractor import extractTextFromFile
 
 _INDEX_NAME = nmbcfg.med_prog_index
 BUCKET_NAME = nmbcfg.med_prog_bucket
@@ -78,13 +78,17 @@ class UpQueueHandler(webapp2.RequestHandler):
 		gcs_file = gcs.open(filename1)
 
 		try:
-			pdf = gcs_file.read()
-			text = pdf_miner.pdf_to_text(pdf)
-			text_uni = to_unicode_or_bust(text)
-			text3 = text_uni.encode('utf-8')
-			doctext_uni = to_unicode_or_bust(doctext)
-			doctext3 = doctext_uni.encode('utf-8')
-			doctext = doctext3 + text3
+			text = extractTextFromFile(gcs_file, filename1)
+			#text = "----> this is where the conversion occurs <----"
+			doctext = text + doctext
+			
+			#pdf = gcs_file.read()
+			#text = pdf_miner.pdf_to_text(pdf)
+			#text_uni = to_unicode_or_bust(text)
+			#text3 = text_uni.encode('utf-8')
+			#doctext_uni = to_unicode_or_bust(doctext)
+			#doctext3 = doctext_uni.encode('utf-8')
+			#doctext = doctext3 + text3
 		except:
 			a = "do something good"
 
