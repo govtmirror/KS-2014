@@ -32,4 +32,19 @@ config = {
     # get your own recaptcha keys by registering at http://www.google.com/recaptcha/
     'captcha_public_key': "6Ldo2fwSAAAAAB4e3uKTRw69jBS4JiOf7e85pBG0",
     'captcha_private_key': "6Ldo2fwSAAAAAH9VP_7_hGDiOS8vbWpzK44e7-nN",
+    
+    # Password AES Encryption Parameters
+    # aes_key must be only 16 (*AES-128*), 24 (*AES-192*), or 32 (*AES-256*) bytes (characters) long.
+    'aes_key': "4ab14c33d92e74d233e42843aab31543",
+    'salt': "awefwaf9&asfd;lj*&asdfj&^_)3fqfja{{sf2/23rfa[[.,<<&Hd23faf;afj3if83jfa;38j2a",
+    
+    # add status codes and templates used to catch and display errors
+    # if a status code is not listed here it will use the default app engine
+    # stacktrace error page or browser error page
+    'error_templates': {
+        403: 'errors/forbidden_access.html',
+        404: 'errors/default_error.html',
+        500: 'errors/default_error.html',
+    },
+          
 }

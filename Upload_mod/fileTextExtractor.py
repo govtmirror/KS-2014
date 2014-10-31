@@ -22,9 +22,11 @@ import logging
 
 
 def to_unicode_or_bust(obj, encoding='utf-8'):
+
     if isinstance(obj, basestring):
         if not isinstance(obj, unicode):
             obj = unicode(obj, encoding)
+          
     return obj
 
 def extractTextFromFile(activeFile, activeFileName):
@@ -44,9 +46,12 @@ def extractTextFromFile(activeFile, activeFileName):
             content = docx.read('word/document.xml')
             
             # now replace all of the xml tags with nothing, we're left with just the text
-            rawText = re.sub('<(.|\n)*?>','',content)
+            rawText = re.sub('<(.|\n)*?>','',content)         
+          
+            text_uni = to_unicode_or_bust(rawText)         
+            #rawText = text_uni.encode('utf-8')
             
-            return rawText
+            return text_uni
         except:
             logging.info("An error occurred processing the file: %s" % activeFileName)
             return ""
@@ -56,8 +61,8 @@ def extractTextFromFile(activeFile, activeFileName):
             pdf = activeFile.read()      
             text = pdf_miner.pdf_to_text(pdf)
             text_uni = to_unicode_or_bust(text)
-            rawText = text_uni.encode('utf-8')
-            return rawText
+            #rawText = text_uni.encode('utf-8')
+            return text_uni
         except:
             logging.info("An error occurred processing the file: %s" % activeFileName)
             return ""
