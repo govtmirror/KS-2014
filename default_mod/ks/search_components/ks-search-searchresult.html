@@ -33,9 +33,16 @@
 		Polymer('ks-search-searchresult',{
 			domReady: function () {
 				var parseResult = this.result.link.split("/");
+				console.log(parseResult);
 			    var lastIndex = parseResult.length - 1;
 			    this.parsedLink = this.bucket + "/" + parseResult[lastIndex];
+			    console.log(this.parsedLink);
 			}
+
+// var parseResult = filename.split("/");
+//     var lastIndex = parseResult.length - 1;
+//     var bucketResult = "ks-main" + "/" + parseResult[lastIndex];
+
 		});
 	</script>
 </polymer-element>
