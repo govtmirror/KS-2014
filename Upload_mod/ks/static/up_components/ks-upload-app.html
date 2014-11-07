@@ -5,6 +5,7 @@
 <link rel="import" href="ks-upload-awardview.html">
 <link rel="import" href="ks-upload-decisionview.html">
 <link rel="import" href="ks-upload-pebview.html">
+<link rel="import" href="ks-upload-otherview.html">
 
 
 <polymer-element name="ks-upload-app" attributes="csrf_token">
@@ -26,13 +27,14 @@
 		</style>
 		<div id="header" class="contentbox" horizontal layout wrap>
 			<img src="../img/NMB_logo.png" width="100px" hieght="100px">
-			<h1>&nbsp;&nbsp;NMB Knowledge Store Search Form</h1>
+			<h1>&nbsp;&nbsp;NMB Knowledge-Store .pdf Upload</h1>
 		</div>
 		<div class="contentbox">
 			<paper-radio-group id="doctypeSelector" on-core-select="{{selectAction}}">
 				<paper-radio-button name="award" label="award"></paper-radio-button>
 				<paper-radio-button name="decision" label="decision"></paper-radio-button>
 				<paper-radio-button name="peb" label="peb"></paper-radio-button>
+				<paper-radio-button name="other" label="other"></paper-radio-button>
 			</paper-radio-group>
 		</div>
 		<core-animated-pages 
@@ -43,6 +45,7 @@
 			<ks-upload-awardview csrf_token={{csrf_token}}></ks-upload-awardview>
 			<ks-upload-decisionview  csrf_token={{csrf_token}}></ks-upload-decisionview>
 			<ks-upload-pebview  csrf_token={{csrf_token}}></ks-upload-pebview>
+			<ks-upload-otherview  csrf_token={{csrf_token}}></ks-upload-otherview>
 		</core-animated-pages>
 	</template>
 
@@ -54,6 +57,7 @@
 				if (mItem == "award") {p.selected = 1;}
 				else if (mItem == "decision") {p.selected = 2;}
 				else if (mItem == "peb") {p.selected = 3;}
+				else if (mItem == "other") {p.selected = 4;}
 				else {p.selected = 0}
 			}
 		});

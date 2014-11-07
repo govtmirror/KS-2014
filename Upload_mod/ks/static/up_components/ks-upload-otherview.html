@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html" attributes="csrf_token">
 
-<polymer-element name="ks-upload-pebview" attributes="csrf_token">
+<polymer-element name="ks-upload-otherview" attributes="csrf_token">
 	<template>
 		<style>
 			.formbox{
@@ -20,7 +20,6 @@
 					method="POST" 
 					enctype="multipart/form-data">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">	
-				<input type="hidden" name="doctype" value="peb" />
 				<div>
 					Upload File:&nbsp;&nbsp;
 					<input type="file" name="file"><br><br>
@@ -28,9 +27,9 @@
 
 				<table>
 					<tr>
-						<td>PEB Number:</td>
+						<td>Document Type (required):</td>
 						<td>
-							<input type="text" id="pebnumber" name="pebnumber"></input>
+							<input type="text" id="doctype" name="doctype" value="other"></input>
 						</td>
 					</tr>
 					<tr>
@@ -77,7 +76,7 @@
 		</div>
 	</template>
 	<script>
-		Polymer('ks-upload-pebview',{
+		Polymer('ks-upload-otherview',{
 
 		});
 	</script>

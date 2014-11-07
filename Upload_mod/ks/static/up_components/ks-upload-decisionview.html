@@ -15,56 +15,80 @@
 		</style>
 		<div class="formbox">
 			<h3>Decision</h3>
-			<form name="awardform" action="/uploadaward" method="POST" enctype="multipart/form-data">
+			<form name="awardform" 
+					action="/uploadaward" 
+					method="POST" 
+					enctype="multipart/form-data">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">	
 				<input type="hidden" name="doctype" value="decision" />
 				<div>
-					Upload File: </br>
-					<input type="file" name="file"><br>
+					Upload File: &nbsp;&nbsp;
+					<input type="file" name="file"><br><br>
 				</div>
+				<table>
+					<tr>
+						<td>Vol. Number:</td>
+						<td>
+							<input type="text" id="volnumber" name="volnumber"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Decision Number:</td>
+						<td>
+							<input type="text" id="decisionnumber" name="decisionnumber"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Cite Page:</td>
+						<td>
+							<input type="text" id="citepage" name="citepage"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Document Date:</td>
+						<td>
+							<input type="date" id="docdate" name="docdate" placeholder="yyyy-m-d"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Arbitrator:</td>
+						<td>
+							<input type="text" id="arbname" name="arbitrator"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Carrier(s):</td>
+						<td>
+							<input type="text" id="carriers" name="carriers"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Union(s):</td>
+						<td>
+							<input type="text" id="unions" name="unions"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Party(s):</td>
+						<td>
+							<input type="text" id="parties" name="parties"></input>
+						</td>
+					</tr>
+					<tr>
+						<td>Craft or Class:</td>
+						<td>
+							<input type="text" id="crafts" name="crafts"></input>
+						</td>
+					</tr>
+				</table>
+				
 				<span>
-		    		Vol. Number:&nbsp;&nbsp;
-					<input type="text" id="volnumber" name="volnumber"></input>
-				</span><br>
-				<span>
-		    		Decision Number:&nbsp;&nbsp;
-					<input type="text" id="decisionnumber" name="decisionnumber"></input>
-				</span><br>
-				<span>
-		    		Cite Page:&nbsp;&nbsp;
-					<input type="text" id="citepage" name="citepage"></input>
-				</span><br>
-				<span>
-		    		Document Date:&nbsp;&nbsp;
-					<input type="date" id="docdate" name="docdate" placeholder="yyyy-m-d"></input>
-				</span><br>
-				<span>
-		    		Arbitrator:&nbsp;&nbsp;
-					<input type="text" id="arbname" name="arbitrator"></input>
-				</span><br>
-				<span>
-		    		Carrier(s):&nbsp;&nbsp;
-					<input type="text" id="carriers" name="carriers"></input>
-				</span><br>
-				<span>
-		    		Union(s):&nbsp;&nbsp;
-					<input type="text" id="unions" name="unions"></input>
-				</span><br>
-				<span>
-		    		Party(s):&nbsp;&nbsp;
-					<input type="text" id="parties" name="parties"></input>
-				</span><br>
-				<span>
-		    		Craft(s):&nbsp;&nbsp;
-					<input type="text" id="crafts" name="crafts"></input>
-				</span><br>
-				<span>
-					Document Text:
+					Add additional text below (will be searchable along with document text):<br>
 					<textarea id="doctext" rows="5" cols="80" name="doctext" required></textarea>
 				</span>
 					
 				<div>
-					<input type="submit" value="Submit Award" class="btn-primary"> <br><br>
+					<input type="submit" value="Submit Decision" class="btn-primary"> <br><br>
 				</div>		
 			</form>
 		</div>

@@ -23,3 +23,6 @@ to
 img/...
 to
 /ks/st
+
+
+Note:  doing a replace of all "../static" with "../ks/static" seems to work.

@@ -4118,16 +4118,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 				</a>
 				text:<br>
 			</p>
-			<p class="textsnippet" ng-bind-html-unsafe="result.doctext">ho</p>
+			<p class="textsnippet">{{result.doctext}}</p>
 		</div>
 	</template>
 	<script>
 		Polymer('ks-search-searchresult',{
 			domReady: function () {
 				var parseResult = this.result.link.split("/");
+				console.log(parseResult);
 			    var lastIndex = parseResult.length - 1;
 			    this.parsedLink = this.bucket + "/" + parseResult[lastIndex];
+			    console.log(this.parsedLink);
 			}
+
+// var parseResult = filename.split("/");
+//     var lastIndex = parseResult.length - 1;
+//     var bucketResult = "ks-main" + "/" + parseResult[lastIndex];
+
 		});
 	</script>
 </polymer-element>
@@ -4180,7 +4187,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		</core-ajax>
 		<div id="header" class="contentbox" horizontal="" layout="" wrap="">
 			<img src="img/NMB_logo.png" width="100px" hieght="100px">
-			<h1>&nbsp;&nbsp;NMB Knowledge Store Search Form 4</h1>
+			<h1>&nbsp;&nbsp;NMB Knowledge Store Search Form</h1>
 		</div>
 
 		<div class="contentbox">
