@@ -3,7 +3,8 @@
 <head>
 	<title>Knowledge Store</title>
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-	<script src="bower_components/platform/platform.js"></script>
+	<!-- <script src="bower_components/platform/platform.js"></script> -->
+	<script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 	<div hidden><!--
 Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -311,7 +312,7 @@ html /deep/ [segment], html /deep/ segment {
 </style>
 
 <script src="bower_components/polymer/polymer.js"></script>
-<!--<link rel="import" href="../polymer-dev/polymer.html">--> 
+
 <!--
 Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
@@ -322,541 +323,142 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
-/**
- * core-input is an unstyled single- or multi-line text field where user can
- * enter input.
- *
- * Example:
- *
- *     <core-input placeholder="Placeholder text here"></core-input>
- *
- *     <core-input multiline placeholder="Enter multiple lines here"></core-input>
- *
- * The text input's value is considered "committed" if the user hits the "enter"
- * key or blurs the input after changing the value. The `change` event is fired
- * when the value becomes committed, and the committed value is stored in the
- * `value` property. The current value of the input is stored in the `inputValue`
- * property.
- *
- * Validation
- * ----------
- *
- * core-input can optionally validate the value using the HTML5 constraints API,
- * similar to native inputs. There are two methods to configure input validation:
- *
- * 1. By setting the `type` attribute. For example, setting it to `email` will
- *    check the value is a valid email, and setting it to `number` will check
- *    the input is a number.
- *
- * 2. By setting attributes related to validation. The attributes are `pattern`,
- *    `min`, `max`, `step` and `required`.
- *
- * Only `required` is supported for multiline inputs currently.
- *
- * Example:
- *
- *     <core-input type="email" placeholder="enter your email"></core-input>
- *
- *     <core-input type="number" min="5" placeholder="enter a number greater than or equal to 5"></core-input>
- *
- *     <core-input pattern=".*abc.*" placeholder="enter something containing 'abc'"></core-input>
- *
- * See https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation
- * for more info on validation.
- *
- * @group Polymer Core Elements
- * @element core-input
- * @homepage github.io
- */
--->
 
-<!--
-Fired when the inputValue of is changed. This is the same event as the DOM
-"input" event.
+`core-input` is an unstyled single-line input field. It extends the native
+`input` element.
 
-@event input
--->
+Example:
 
-<!--
-Fired when the user commits the value of the input, either by the hitting the
-`enter` key or blurring the input after the changing the inputValue. Also see the
-DOM "change" event.
+    <input is="core-input">
 
-@event change
--->
+The input's value is considered "committed" if the user hits the "enter" key
+or blurs the input after changing the value. The committed value is stored in
+the `committedValue` property.
 
-<!--
-Fired when the inputValue of this text input changes and fails validation.
+If the input has `type = number`, this element will also prevent non-numeric characters
+from being typed into the text field.
 
-@event input-invalid
-@param {Object} detail
-@param {string} value The text input's inputValue.
--->
+Accessibility
+-------------
 
-<!--
-Fired when the inputValue of this text input changes and passes validation.
+The following ARIA attributes are set automatically:
 
-@event input-valid
-@param {Object} detail
-@param {string} value The text input's inputValue.
+- `aria-label`: set to the `placeholder` attribute
+- `aria-disabled`: set if `disabled` is true
+
+@group Polymer Core Elements
+@element core-input
+@extends input
+@homepage github.io
 -->
 
 
-<polymer-element name="core-input" on-focus="{{focusAction}}" assetpath="bower_components/core-input/">
+<style shim-shadowdom="">
+  /* FIXME consider theming */
 
-  <template>
+  html /deep/ input[is=core-input] {
+    width: 20em;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    outline: none;
+  }
+</style>
 
-    <style>/*
- * @license
- * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
- * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
- * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
- * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
- * Code distributed by Google as part of the polymer project is also
- * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
- */
+<polymer-element name="core-input" extends="input" assetpath="bower_components/core-input/">
 
-:host {
-  display: inline-block;
-  text-align: inherit;
-  position: relative;
-  width: 20em;
-}
+<script>
 
-:host:hover {
-  cursor: text;
-}
+  Polymer('core-input', {
 
-input,
-textarea {
-  font: inherit;
-  color: inherit;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  width: 100%;
-}
-
-textarea {
-  resize: none;
-}
-
-textarea[rows=fit] {
-  height: 100%;
-}</style>
-
-    <template if="{{multiline}}">
-      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
-    </template>
-
-    <template if="{{!multiline}}">
-      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" pattern="{{pattern}}" min="{{min}}" max="{{max}}" step="{{step}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-keypress="{{keypressAction}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}">
-    </template>
-
-  </template>
-
-  <script>
-
-    Polymer('core-input', {
-      publish: {
-        /**
-         * Placeholder text that hints to the user what can be entered in
-         * the input.
-         *
-         * @attribute placeholder
-         * @type string
-         * @default ''
-         */
-        placeholder: '',
-  
-        /**
-         * If true, this input cannot be focused and the user cannot change
-         * its value.
-         *
-         * @attribute disabled
-         * @type boolean
-         * @default false
-         */
-        disabled: false,
-  
-        /**
-         * If true, the user cannot modify the value of the input.
-         *
-         * @attribute readonly
-         * @type boolean
-         * @default false
-         */
-        readonly: false,
-
-        /**
-         * If true, this input will automatically gain focus on page load.
-         *
-         * @attribute autofocus
-         * @type boolean
-         * @default false
-         */
-        autofocus: false,
-
-        /**
-         * If true, this input accepts multi-line input like a `<textarea>`
-         *
-         * @attribute multiline
-         * @type boolean
-         * @default false
-         */
-        multiline: false,
-  
-        /**
-         * (multiline only) The height of this text input in rows. The input
-         * will scroll internally if more input is entered beyond the size
-         * of the component. This property is meaningless if multiline is
-         * false. You can also set this property to "fit" and size the
-         * component with CSS to make the input fit the CSS size.
-         *
-         * @attribute rows
-         * @type number|'fit'
-         * @default 'fit'
-         */
-        rows: 'fit',
-  
-        /**
-         * The current value of this input. Changing inputValue programmatically
-         * will cause value to be out of sync. Instead, change value directly
-         * or call commit() after changing inputValue.
-         *
-         * @attribute inputValue
-         * @type string
-         * @default ''
-         */
-        inputValue: '',
-  
-        /**
-         * The value of the input committed by the user, either by changing the
-         * inputValue and blurring the input, or by hitting the `enter` key.
-         *
-         * @attribute value
-         * @type string
-         * @default ''
-         */
-        value: '',
-
-        /**
-         * Set the input type. Not supported for `multiline`.
-         *
-         * @attribute type
-         * @type string
-         * @default text
-         */
-        type: 'text',
-
-        /**
-         * If true, the input is invalid if its value is null.
-         *
-         * @attribute required
-         * @type boolean
-         * @default false
-         */
-        required: false,
-
-        /**
-         * A regular expression to validate the input value against. See
-         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
-         * for more info. Not supported if `multiline` is true.
-         *
-         * @attribute pattern
-         * @type string
-         * @default '.*'
-         */
-        // FIXME(yvonne): The default is set to .* because we can't bind to pattern such
-        // that the attribute is unset if pattern is null.
-        pattern: '.*',
-
-        /**
-         * If set, the input is invalid if the value is less than this property. See
-         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
-         * for more info. Not supported if `multiline` is true.
-         *
-         * @attribute min
-         */
-        min: null,
-
-        /**
-         * If set, the input is invalid if the value is greater than this property. See
-         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
-         * for more info. Not supported if `multiline` is true.
-         *
-         * @attribute max
-         */
-        max: null,
-
-        /**
-         * If set, the input is invalid if the value is not `min` plus an integral multiple
-         * of this property. See
-         * https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation#Validation-related_attributes
-         * for more info. Not supported if `multiline` is true.
-         *
-         * @attribute step
-         */
-        step: null,
-
-        /**
-         * The maximum length of the input value.
-         *
-         * @attribute maxlength
-         * @type number
-         */
-        maxlength: null,
-  
-        /**
-         * If this property is true, the text input's inputValue failed validation.
-         *
-         * @attribute invalid
-         * @type boolean
-         * @default false
-         */
-        invalid: false,
-
-        /**
-         * If this property is true, validate the input as they are entered.
-         *
-         * @attribute validateImmediately
-         * @type boolean
-         * @default true
-         */
-        validateImmediately: true
-      },
-
-      ready: function() {
-        this.handleTabindex(this.getAttribute('tabindex'));
-      },
-
-      disabledChanged: function() {
-        if (this.disabled) {
-          this.setAttribute('aria-disabled', true);
-        } else {
-          this.removeAttribute('aria-disabled');
-        }
-      },
-
-      invalidChanged: function() {
-        this.classList.toggle('invalid', this.invalid);
-        this.fire('input-'+ (this.invalid ? 'invalid' : 'valid'), {value: this.inputValue});
-      },
-
-      inputValueChanged: function() {
-        if (this.validateImmediately) {
-          this.updateValidity_();
-        }
-      },
-
-      valueChanged: function() {
-        this.inputValue = this.value;
-      },
-
-      requiredChanged: function() {
-        if (this.validateImmediately) {
-          this.updateValidity_();
-        }
-      },
-
-      attributeChanged: function(attr, oldVal, curVal) {
-        if (attr === 'tabindex') {
-          this.handleTabindex(curVal);
-        }
-      },
-
-      handleTabindex: function(tabindex) {
-        if (tabindex > 0) {
-          this.$.input.setAttribute('tabindex', -1);
-        } else {
-          this.$.input.removeAttribute('tabindex');
-        }
-      },
+    publish: {
 
       /**
-       * Commits the inputValue to value.
+       * The "committed" value of the input, ie. the input value when the user
+       * hits the "enter" key or blurs the input after changing the value. You
+       * can bind to this value instead of listening for the "change" event.
+       * Setting this property has no effect on the input value.
        *
-       * @method commit
+       * @attribute committedValue
+       * @type string
+       * @default ''
        */
-      commit: function() {
-         this.value = this.inputValue;
-      },
-
-      updateValidity_: function() {
-        if (this.$.input.willValidate) {
-          this.invalid = !this.$.input.validity.valid;
-        }
-      },
-
-      keypressAction: function(e) {
-        // disallow non-numeric input if type = number
-        if (this.type !== 'number') {
-          return;
-        }
-        var c = String.fromCharCode(e.charCode);
-        if (e.charCode !== 0 && !c.match(/[\d-\.e]/)) {
-          e.preventDefault();
-        }
-      },
-
-      inputChangeAction: function() {
-        this.commit();
-        if (!window.ShadowDOMPolyfill) {
-          // re-fire event that does not bubble across shadow roots
-          this.fire('change', null, this);
-        }
-      },
-
-      focusAction: function(e) {
-        if (this.getAttribute('tabindex') > 0) {
-          // Forward focus to the inner input if tabindex is set on the element
-          // This will not cause an infinite loop because focus will not fire on the <input>
-          // again if it's already focused.
-          this.$.input.focus();
-        }
-      },
-
-      inputFocusAction: function(e) {
-        if (window.ShadowDOMPolyfill) {
-          // re-fire non-bubbling event if polyfill
-          this.fire('focus', null, this, false);
-        }
-      },
-
-      inputBlurAction: function() {
-        if (window.ShadowDOMPolyfill) {
-          // re-fire non-bubbling event
-          this.fire('blur', null, this, false);
-        }
-      },
+      committedValue: '',
 
       /**
-       * Forwards to the internal input / textarea element.
+       * Set to true to prevent invalid input from being entered.
        *
-       * @method blur
+       * @attribute preventInvalidInput
+       * @type boolean
+       * @default false
        */
-      blur: function() {
-        this.$.input.blur();
-      },
+      preventInvalidInput: false
 
-      /**
-       * Forwards to the internal input / textarea element.
-       *
-       * @method click
-       */
-      click: function() {
-        this.$.input.click();
-      },
+    },
 
-      /**
-       * Forwards to the internal input / textarea element.
-       *
-       * @method focus
-       */
-      focus: function() {
-        this.$.input.focus();
-      },
+    previousValidInput: '',
 
-      /**
-       * Forwards to the internal input / textarea element.
-       *
-       * @method select
-       */
-      select: function() {
-        this.$.input.select();
-      },
+    eventDelegates: {
+      input: 'inputAction',
+      change: 'changeAction'
+    },
 
-      /**
-       * Forwards to the internal input / textarea element.
-       *
-       * @method setSelectionRange
-       * @param {number} selectionStart
-       * @param {number} selectionEnd
-       * @param {String} selectionDirection (optional)
-       */
-      setSelectionRange: function(selectionStart, selectionEnd, selectionDirection) {
-        this.$.input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
-      },
+    ready: function() {
+      /* set ARIA attributes */
+      this.disabledHandler();
+      this.placeholderHandler();
+    },
 
-      /**
-       * Forwards to the internal input element, not implemented for multiline.
-       *
-       * @method setRangeText
-       * @param {String} replacement
-       * @param {number} start (optional)
-       * @param {number} end (optional)
-       * @param {String} selectMode (optional)
-       */
-      setRangeText: function(replacement, start, end, selectMode) {
-        if (!this.multiline) {
-          this.$.input.setRangeText(replacement, start, end, selectMode);
-        }
-      },
-
-      /**
-       * Forwards to the internal input, not implemented for multiline.
-       *
-       * @method stepDown
-       * @param {number} n (optional)
-       */
-      stepDown: function(n) {
-        if (!this.multiline) {
-          this.$.input.stepDown(n);
-        }
-      },
-
-      /**
-       * Forwards to the internal input, not implemented for multiline.
-       *
-       * @method stepUp
-       * @param {number} n (optional)
-       */
-      stepUp: function(n) {
-        if (!this.multiline) {
-          this.$.input.stepUp(n);
-        }
-      },
-
-      get willValidate() {
-        return this.$.input.willValidate;
-      },
-
-      get validity() {
-        return this.$.input.validity;
-      },
-
-      get validationMessage() {
-        return this.$.input.validationMessage;
-      },
-
-      /**
-       * Forwards to the internal input / textarea element and updates state.
-       *
-       * @method checkValidity
-       * @return {boolean}
-       */
-      checkValidity: function() {
-        var r = this.$.input.checkValidity();
-        this.updateValidity_();
-        return r;
-      },
-
-      /**
-       * Forwards to the internal input / textarea element and updates state.
-       *
-       * @method setCustomValidity
-       * @param {String} message
-       */
-      setCustomValidity: function(message) {
-        this.$.input.setCustomValidity(message);
-        this.updateValidity_();
+    attributeChanged: function(attr, old) {
+      if (this[attr + 'Handler']) {
+        this[attr + 'Handler'](old);
       }
+    },
 
-    });
-  </script>
+    disabledHandler: function() {
+      if (this.disabled) {
+        this.setAttribute('aria-disabled', '');
+      } else {
+        this.removeAttribute('aria-disabled');
+      }
+    },
+
+    placeholderHandler: function() {
+      if (this.placeholder) {
+        this.setAttribute('aria-label', this.placeholder);
+      } else {
+        this.removeAttribute('aria-label');
+      }
+    },
+
+    /**
+     * Commits the `value` to `committedValue`
+     *
+     * @method commit
+     */
+    commit: function() {
+      this.committedValue = this.value;
+    },
+
+    changeAction: function() {
+      this.commit();
+    },
+
+    inputAction: function(e) {
+      if (this.preventInvalidInput) {
+        if (!e.target.validity.valid) {
+          e.target.value = this.previousValidInput;
+        } else {
+          this.previousValidInput = e.target.value;
+        }
+      }
+    }
+
+  });
+
+</script>
 
 </polymer-element>
 
@@ -1025,6 +627,15 @@ Apply `circle` class to make the rippling effect within a circle.
 @homepage github.io
 -->
 
+<!--
+Fired when the animation finishes. This is useful if you want to wait until the ripple
+animation finishes to perform some action.
+
+@event core-transitionend
+@param {Object} detail
+@param {Object} detail.node The animated node
+-->
+
 
 
 <polymer-element name="paper-ripple" attributes="initialOpacity opacityDecayVelocity" assetpath="bower_components/paper-ripple/">
@@ -1089,7 +700,7 @@ Apply `circle` class to make the rippling effect within a circle.
     // INK EQUATIONS
     //
     function waveRadiusFn(touchDownMs, touchUpMs, anim) {
-      // Convert from ms to s.
+      // Convert from ms to s
       var touchDown = touchDownMs / 1000;
       var touchUp = touchUpMs / 1000;
       var totalElapsed = touchDown + touchUp;
@@ -1578,6 +1189,7 @@ Keys Syntax Grammar:
      * Values from: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Value_of_keyCode
      */
     var KEY_CODE = {
+      9: 'tab',
       13: 'enter',
       27: 'esc',
       33: 'pageup',
@@ -1728,6 +1340,9 @@ Keys Syntax Grammar:
         this._keyHandler = processKeys.bind(this);
       },
       attached: function() {
+        if (!this.target) {
+          this.target = this.parentNode;
+        }
         listen(this.target, this._keyHandler);
       },
       detached: function() {
@@ -1744,10 +1359,11 @@ Keys Syntax Grammar:
         keys: '',
         /**
          * The node that will fire keyboard events.
+         * Default to this element's parentNode unless one is assigned
          *
          * @attribute target
          * @type Node
-         * @default null
+         * @default this.parentNode
          */
         target: null
       },
@@ -1995,7 +1611,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 }
 
 :host(:focus) {
-  outline: none;
+  outline: 0;
 }
 
 #checkboxContainer {
@@ -2317,12 +1933,13 @@ Example:
 
     <paper-button>flat button</paper-button>
     <paper-button raised>raised button</paper-button>
+    <paper-button noink>No ripple effect</paper-button>
 
 You may use custom DOM in the button body to create a variety of buttons. For example, to
 create a button with an icon and some text:
 
     <paper-button>
-      <core-icon icon="favorite">
+      <core-icon icon="favorite"></core-icon>
       custom button content
     </paper-button>
 
@@ -2353,123 +1970,6 @@ The opacity of the ripple is not customizable via CSS.
 -->
 
 
-<!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-<!--
-
-The `core-icon` element displays an icon. By default an icon renders as a 24px square.
-
-Example using src:
-
-    <core-icon src="star.png"></core-icon>
-
-Example setting size to 32px x 32px:
-
-    <core-icon class="big" src="big_star.png"></core-icon>
-
-    <style>
-      .big {
-        height: 32px;
-        width: 32px;
-      }
-    </style>
-
-The core elements include several sets of icons. 
-To use the default set of icons, import  `core-icons.html` and use the `icon` attribute to specify an icon:
-
-    &lt;!-- import default iconset and core-icon --&gt;
-    <link rel="import" href="/components/core-icons/core-icons.html">
-
-    <core-icon icon="menu"></core-icon>
-    
-To use a different built-in set of icons, import  `core-icons/<iconset>-icons.html`, and
-specify the icon as `<iconset>:<icon>`. For example:
-
-    &lt;!-- import communication iconset and core-icon --&gt;
-    <link rel="import" href="/components/core-icons/communication-icons.html">
-
-    <core-icon icon="communication:email"></core-icon>
-    
-You can also create custom icon sets of bitmap or SVG icons. 
-
-Example of using an icon named `cherry` from a custom iconset with the ID `fruit`:
-
-    <core-icon icon="fruit:cherry"></core-icon>
-
-See [core-iconset](#core-iconset) and [core-iconset-svg](#core-iconset-svg) for more information about
-how to create a custom iconset.
-
-See [core-icons](http://www.polymer-project.org/components/core-icons/demo.html) for the default set of icons.
-
-@group Polymer Core Elements
-@element core-icon
-@homepage polymer.github.io
--->
-<!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<!--
-/**
- * @group Polymer Core Elements
- *
- * The `core-iconset` element allows users to define their own icon sets. 
- * The `src` property specifies the url of the icon image. Multiple icons may
- * be included in this image and they may be organized into rows.
- * The `icons` property is a space separated list of names corresponding to the
- * icons. The names must be ordered as the icons are ordered in the icon image.
- * Icons are expected to be square and are the size specified by the `iconSize`
- * property. The `width` property corresponds to the width of the icon image 
- * and must be specified if icons are arranged into multiple rows in the image.
- *
- * All `core-iconset` elements are available for use by other `core-iconset`
- * elements via a database keyed by id. Typically, an element author that wants
- * to support a set of custom icons uses a `core-iconset` to retrieve 
- * and use another, user-defined iconset.
- *
- * Example:
- *
- *     <core-iconset id="my-icons" src="my-icons.png" width="96" iconSize="24"
- *         icons="location place starta stopb bus car train walk">
- *     </core-iconset>
- *
- * This will automatically register the icon set "my-icons" to the iconset
- * database.  To use these icons from within another element, make a 
- * `core-iconset` element and call the `byId` method to retrieve a
- * given iconset. To apply a particular icon to an element, use the 
- * `applyIcon` method. For example:
- *
- *     iconset.applyIcon(iconNode, 'car');
- *
- * Themed icon sets are also supported. The `core-iconset` can contain child
- * `property` elements that specify a theme with an offsetX and offsetY of the
- * theme within the icon resource. For example.
- *
- *     <core-iconset id="my-icons" src="my-icons.png" width="96" iconSize="24"
- *         icons="location place starta stopb bus car train walk">
- *       <property theme="special" offsetX="256" offsetY="24"></property>
- *     </core-iconset>
- *
- * Then a themed icon can be applied like this:
- *
- *     iconset.applyIcon(iconNode, 'car', 'special');
- *
- * @element core-iconset
- * @extends core-meta
- * @homepage github.io
- */
--->
 
 <!--
 Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -2481,532 +1981,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
-`core-meta` provides a method of constructing a self-organizing database.
-It is useful to collate element meta-data for things like catalogs and for 
-designer.
 
-Example, an element folder has a `metadata.html` file in it, that contains a 
-`core-meta`, something like this:
-
-    <core-meta id="my-element" label="My Element">
-      <property name="color" value="blue"></property>
-    </core-meta>
-
-An application can import as many of these files as it wants, and then use 
-`core-meta` again to access the collected data.
-
-    <script>
-      var meta = document.createElement('core-meta');
-      console.log(meta.list); // dump a list of all meta-data elements that have been created
-    </script>
-
-Use `byId(id)` to retrive a specific core-meta.
-
-    <script>
-      var meta = document.createElement('core-meta');
-      console.log(meta.byId('my-element'));
-    </script>
-
-By default all meta-data are stored in a single databse.  If your meta-data 
-have different types and want them to be stored separately, use `type` to 
-differentiate them.
+`paper-shadow` is a container that renders two shadows on top of each other to
+create the effect of a lifted piece of paper.
 
 Example:
 
-    <core-meta id="x-foo" type="xElt"></core-meta>
-    <core-meta id="x-bar" type="xElt"></core-meta>
-    <core-meta id="y-bar" type="yElt"></core-meta>
-
-    <script>
-      var meta = document.createElement('core-meta');
-      meta.type = 'xElt';
-      console.log(meta.list);
-    </script>
-
-@group Polymer Core Elements
-@element core-meta
-@homepage github.io
--->
-
-
-
-<polymer-element name="core-meta" attributes="label type" hidden assetpath="bower_components/core-meta/">
-<script>
-
-  (function() {
-    
-    var SKIP_ID = 'meta';
-    var metaData = {}, metaArray = {};
-
-    Polymer('core-meta', {
-      
-      /**
-       * The type of meta-data.  All meta-data with the same type with be
-       * stored together.
-       * 
-       * @attribute type
-       * @type string
-       * @default 'default'
-       */
-      type: 'default',
-      
-      alwaysPrepare: true,
-      
-      ready: function() {
-        this.register(this.id);
-      },
-      
-      get metaArray() {
-        var t = this.type;
-        if (!metaArray[t]) {
-          metaArray[t] = [];
-        }
-        return metaArray[t];
-      },
-      
-      get metaData() {
-        var t = this.type;
-        if (!metaData[t]) {
-          metaData[t] = {};
-        }
-        return metaData[t];
-      },
-      
-      register: function(id, old) {
-        if (id && id !== SKIP_ID) {
-          this.unregister(this, old);
-          this.metaData[id] = this;
-          this.metaArray.push(this);
-        }
-      },
-      
-      unregister: function(meta, id) {
-        delete this.metaData[id || meta.id];
-        var i = this.metaArray.indexOf(meta);
-        if (i >= 0) {
-          this.metaArray.splice(i, 1);
-        }
-      },
-      
-      /**
-       * Returns a list of all meta-data elements with the same type.
-       * 
-       * @property list
-       * @type array
-       * @default []
-       */
-      get list() {
-        return this.metaArray;
-      },
-      
-      /**
-       * Retrieves meta-data by ID.
-       *
-       * @method byId
-       * @param {String} id The ID of the meta-data to be returned.
-       * @returns Returns meta-data.
-       */
-      byId: function(id) {
-        return this.metaData[id];
-      }
-      
-    });
-    
-  })();
-  
-</script>
-</polymer-element>
-
-
-<polymer-element name="core-iconset" extends="core-meta" attributes="src width icons iconSize" assetpath="bower_components/core-iconset/">
-  
-  <script>
-  
-    Polymer('core-iconset', {
-  
-      /**
-       * The URL of the iconset image.
-       *
-       * @attribute src
-       * @type string
-       * @default ''
-       */
-      src: '',
-
-      /**
-       * The width of the iconset image. This must only be specified if the
-       * icons are arranged into separate rows inside the image.
-       *
-       * @attribute width
-       * @type number
-       * @default 0
-       */
-      width: 0,
-
-      /**
-       * A space separated list of names corresponding to icons in the iconset
-       * image file. This list must be ordered the same as the icon images
-       * in the image file.
-       *
-       * @attribute icons
-       * @type string
-       * @default ''
-       */
-      icons: '',
-
-      /**
-       * The size of an individual icon. Note that icons must be square.
-       *
-       * @attribute iconSize
-       * @type number
-       * @default 24
-       */
-      iconSize: 24,
-
-      /**
-       * The horizontal offset of the icon images in the inconset src image.
-       * This is typically used if the image resource contains additional images
-       * beside those intended for the iconset.
-       *
-       * @attribute offsetX
-       * @type number
-       * @default 0
-       */
-      offsetX: 0,
-      /**
-       * The vertical offset of the icon images in the inconset src image.
-       * This is typically used if the image resource contains additional images
-       * beside those intended for the iconset.
-       *
-       * @attribute offsetY
-       * @type number
-       * @default 0
-       */
-      offsetY: 0,
-      type: 'iconset',
-
-      created: function() {
-        this.iconMap = {};
-        this.iconNames = [];
-        this.themes = {};
-      },
-  
-      ready: function() {
-        // TODO(sorvell): ensure iconset's src is always relative to the main
-        // document
-        if (this.src && (this.ownerDocument !== document)) {
-          this.src = this.resolvePath(this.src, this.ownerDocument.baseURI);
-        }
-        this.super();
-        this.updateThemes();
-      },
-
-      iconsChanged: function() {
-        var ox = this.offsetX;
-        var oy = this.offsetY;
-        this.icons && this.icons.split(/\s+/g).forEach(function(name, i) {
-          this.iconNames.push(name);
-          this.iconMap[name] = {
-            offsetX: ox,
-            offsetY: oy
-          }
-          if (ox + this.iconSize < this.width) {
-            ox += this.iconSize;
-          } else {
-            ox = this.offsetX;
-            oy += this.iconSize;
-          }
-        }, this);
-      },
-
-      updateThemes: function() {
-        var ts = this.querySelectorAll('property[theme]');
-        ts && ts.array().forEach(function(t) {
-          this.themes[t.getAttribute('theme')] = {
-            offsetX: parseInt(t.getAttribute('offsetX')) || 0,
-            offsetY: parseInt(t.getAttribute('offsetY')) || 0
-          };
-        }, this);
-      },
-
-      // TODO(ffu): support retrived by index e.g. getOffset(10);
-      /**
-       * Returns an object containing `offsetX` and `offsetY` properties which
-       * specify the pixel locaion in the iconset's src file for the given
-       * `icon` and `theme`. It's uncommon to call this method. It is useful,
-       * for example, to manually position a css backgroundImage to the proper
-       * offset. It's more common to use the `applyIcon` method.
-       *
-       * @method getOffset
-       * @param {String|Number} icon The name of the icon or the index of the
-       * icon within in the icon image.
-       * @param {String} theme The name of the theme.
-       * @returns {Object} An object specifying the offset of the given icon 
-       * within the icon resource file; `offsetX` is the horizontal offset and
-       * `offsetY` is the vertical offset. Both values are in pixel units.
-       */
-      getOffset: function(icon, theme) {
-        var i = this.iconMap[icon];
-        if (!i) {
-          var n = this.iconNames[Number(icon)];
-          i = this.iconMap[n];
-        }
-        var t = this.themes[theme];
-        if (i && t) {
-          return {
-            offsetX: i.offsetX + t.offsetX,
-            offsetY: i.offsetY + t.offsetY
-          }
-        }
-        return i;
-      },
-
-      /**
-       * Applies an icon to the given element as a css background image. This
-       * method does not size the element, and it's often necessary to set 
-       * the element's height and width so that the background image is visible.
-       *
-       * @method applyIcon
-       * @param {Element} element The element to which the background is
-       * applied.
-       * @param {String|Number} icon The name or index of the icon to apply.
-       * @param {Number} scale (optional, defaults to 1) A scaling factor 
-       * with which the icon can be magnified.
-       * @return {Element} The icon element.
-       */
-      applyIcon: function(element, icon, scale) {
-        var offset = this.getOffset(icon);
-        scale = scale || 1;
-        if (element && offset) {
-          var icon = element._icon || document.createElement('div');
-          var style = icon.style;
-          style.backgroundImage = 'url(' + this.src + ')';
-          style.backgroundPosition = (-offset.offsetX * scale + 'px') + 
-             ' ' + (-offset.offsetY * scale + 'px');
-          style.backgroundSize = scale === 1 ? 'auto' :
-             this.width * scale + 'px';
-          if (icon.parentNode !== element) {
-            element.appendChild(icon);
-          }
-          return icon;
-        }
-      }
-
-    });
-
-  </script>
-
-</polymer-element>
-
-
-<style shim-shadowdom="">/* Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt */
-
-html /deep/ core-icon {
-  display: inline-block;
-  vertical-align: middle;
-  background-repeat: no-repeat;
-  fill: currentcolor;
-  position: relative;
-  height: 24px;
-  width: 24px;
-}</style>
-
-<polymer-element name="core-icon" attributes="src icon alt" assetpath="bower_components/core-icon/">
-<script>
-(function() {
-  
-  // mono-state
-  var meta;
-  
-  Polymer('core-icon', {
-
-    /**
-     * The URL of an image for the icon. If the src property is specified,
-     * the icon property should not be.
-     *
-     * @attribute src
-     * @type string
-     * @default ''
-     */
-    src: '',
-
-    /**
-     * Specifies the icon name or index in the set of icons available in
-     * the icon's icon set. If the icon property is specified,
-     * the src property should not be.
-     *
-     * @attribute icon
-     * @type string
-     * @default ''
-     */
-    icon: '',
-
-    /**
-     * Alternative text content for accessibility support.
-     * If alt is present and not empty, it will set the element's role to img and add an aria-label whose content matches alt.
-     * If alt is present and is an empty string, '', it will hide the element from the accessibility layer
-     * If alt is not present, it will set the element's role to img and the element will fallback to using the icon attribute for its aria-label.
-     * 
-     * @attribute alt
-     * @type string
-     * @default ''
-     */
-    alt: null,
-
-    observe: {
-      'icon': 'updateIcon',
-      'alt': 'updateAlt'
-    },
-
-    defaultIconset: 'icons',
-
-    ready: function() {
-      if (!meta) {
-        meta = document.createElement('core-iconset');
-      }
-
-      // Allow user-provided `aria-label` in preference to any other text alternative.
-      if (this.hasAttribute('aria-label')) {
-        // Set `role` if it has not been overridden.
-        if (!this.hasAttribute('role')) {
-          this.setAttribute('role', 'img');
-        }
-        return;
-      }
-      this.updateAlt();
-    },
-
-    srcChanged: function() {
-      var icon = this._icon || document.createElement('div');
-      icon.textContent = '';
-      icon.setAttribute('fit', '');
-      icon.style.backgroundImage = 'url(' + this.src + ')';
-      icon.style.backgroundPosition = 'center';
-      icon.style.backgroundSize = '100%';
-      if (!icon.parentNode) {
-        this.appendChild(icon);
-      }
-      this._icon = icon;
-    },
-
-    getIconset: function(name) {
-      return meta.byId(name || this.defaultIconset);
-    },
-
-    updateIcon: function(oldVal, newVal) {
-      if (!this.icon) {
-        this.updateAlt();
-        return;
-      }
-      var parts = String(this.icon).split(':');
-      var icon = parts.pop();
-      if (icon) {
-        var set = this.getIconset(parts.pop());
-        if (set) {
-          this._icon = set.applyIcon(this, icon);
-          if (this._icon) {
-            this._icon.setAttribute('fit', '');
-          }
-        }
-      }
-      // Check to see if we're using the old icon's name for our a11y fallback
-      if (oldVal) {
-        if (oldVal.split(':').pop() == this.getAttribute('aria-label')) {
-          this.updateAlt();
-        }
-      }
-    },
-
-    updateAlt: function() {
-      // Respect the user's decision to remove this element from
-      // the a11y tree
-      if (this.getAttribute('aria-hidden')) {
-        return;
-      }
-
-      // Remove element from a11y tree if `alt` is empty, otherwise
-      // use `alt` as `aria-label`.
-      if (this.alt === '') {
-        this.setAttribute('aria-hidden', 'true');
-        if (this.hasAttribute('role')) {
-          this.removeAttribute('role');
-        }
-        if (this.hasAttribute('aria-label')) {
-          this.removeAttribute('aria-label');
-        }
-      } else {
-        this.setAttribute('aria-label', this.alt ||
-                                        this.icon.split(':').pop());
-        if (!this.hasAttribute('role')) {
-          this.setAttribute('role', 'img');
-        }
-        if (this.hasAttribute('aria-hidden')) {
-          this.removeAttribute('aria-hidden');
-        }
-      }
-    }
-
-  });
-  
-})();
-</script>
-
-</polymer-element>
-
-
-<!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<!--
-The `paper-shadow` element is a helper to add shadows to elements.
-Paper shadows are composed of two shadows on top of each other. We
-mimic this effect by using two elements on top of each other, each with a
-different drop shadow. You can apply the shadow to an element by assigning
-it as the target. If you do not specify a target, the shadow is applied to
-the `paper-shadow` element's parent element or shadow host element if its
-parent is a shadow root. Alternatively, you can use the CSS classes included
-by this element directly.
-
-Example:
-
-    <div id="myCard" class="card"></div>
-    <paper-shadow id="myShadow" z="1"></div>
-
-    // Assign a target explicitly
-    myShadow.target = document.getElementById('myCard');
-
-    // Auto-assign the target.
-    <div class="card">
-      <paper-shadow z="1"></paper-shadow>
-    </div>
-
-    // Use the classes directly
-    <div class="card paper-shadow-top paper-shadow-top-z-1">
-      <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-    </div>
-
-If you assign a target to a `paper-shadow` element, it creates two nodes and inserts
-them as the first children of the target, or the first children of the target's shadow
-root if there is one. This implies:
-
-  1. If the primary node that drops the shadow has styling that affects its shape,
-     the same styling must be applied to elements with class `paper-shadow`.
-     `border-radius` is a very common property and is inherited automatically.
-
-  2. The target's overflow property will be set to `overflow: visible` because the
-     shadow is rendered beyond the bounds of its container. Position the shadow as a
-     separate layer and use a different child element for clipping if needed.
+    <paper-shadow z="1">
+      ... card content ...
+    </paper-shadow>
 
 @group Paper Elements
 @class paper-shadow
@@ -3014,11 +1997,7 @@ root if there is one. This implies:
 
 
 
-<polymer-element name="paper-shadow" assetpath="bower_components/paper-shadow/">
-
-  <template>
-
-    <style no-shim="">/*
+<style shim-shadowdom="">/*
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -3028,247 +2007,114 @@ root if there is one. This implies:
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-.paper-shadow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+html /deep/ paper-shadow,
+html /deep/ paper-animated-shadow {
+  display: block;
+  position: relative;
+}
+
+html /deep/ paper-shadow::shadow #shadow-bottom,
+html /deep/ paper-shadow::shadow #shadow-top {
   border-radius: inherit;
   pointer-events: none;
 }
 
-.paper-shadow-animated.paper-shadow {
+html /deep/ paper-shadow::shadow #shadow-bottom[animated],
+html /deep/ paper-shadow::shadow #shadow-top[animated] {
   transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.paper-shadow-top-z-1 {
+html /deep/ .paper-shadow-top-z-1 {
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
 }
 
-.paper-shadow-bottom-z-1 {
+html /deep/ .paper-shadow-bottom-z-1 {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
-.paper-shadow-top-z-2 {
+html /deep/ .paper-shadow-top-z-2 {
   box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.paper-shadow-bottom-z-2 {
+html /deep/ .paper-shadow-bottom-z-2 {
   box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
 }
 
-.paper-shadow-top-z-3 {
+html /deep/ .paper-shadow-top-z-3 {
   box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
-.paper-shadow-bottom-z-3 {
+html /deep/ .paper-shadow-bottom-z-3 {
   box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
 }
 
-.paper-shadow-top-z-4 {
+html /deep/ .paper-shadow-top-z-4 {
   box-shadow: 0 25px 55px 0 rgba(0, 0, 0, 0.21);
 }
 
-.paper-shadow-bottom-z-4 {
+html /deep/ .paper-shadow-bottom-z-4 {
   box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22);
 }
 
-.paper-shadow-top-z-5 {
+html /deep/ .paper-shadow-top-z-5 {
   box-shadow: 0 40px 77px 0 rgba(0, 0, 0, 0.22);
 }
 
-.paper-shadow-bottom-z-5 {
+html /deep/ .paper-shadow-bottom-z-5 {
   box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2);
-}
-
-.paper-shadow-animate-z-1-z-2.paper-shadow-top {
-  -webkit-transition: none;
-  -webkit-animation: animate-shadow-top-z-1-z-2 0.7s infinite alternate;
-}
-
-.paper-shadow-animate-z-1-z-2 .paper-shadow-bottom {
-  -webkit-transition: none;
-  -webkit-animation: animate-shadow-bottom-z-1-z-2 0.7s infinite alternate;
-}
-
-@-webkit-keyframes animate-shadow-top-z-1-z-2 {
-  0% {
-    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
-  }
-  100% {
-    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
-}
-
-@-webkit-keyframes animate-shadow-bottom-z-1-z-2 {
-  0% {
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  }
-  100% {
-    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
-  }
 }</style>
 
-  </template>
+<polymer-element name="paper-shadow" assetpath="bower_components/paper-shadow/">
 
-  <script>
-    Polymer('paper-shadow', {
+<template>
 
-      publish: {
-        /**
-         * If set, the shadow is applied to this node.
-         *
-         * @attribute target
-         * @type Element
-         * @default null
-         */
-        target: {value: null, reflect: true},
+  <div id="shadow-bottom" fit="" animated?="[[animated]]" class="paper-shadow-bottom-z-[[z]]"></div>
+  <div id="shadow-top" fit="" animated?="[[animated]]" class="paper-shadow-top-z-[[z]]"></div>
 
-        /**
-         * The z-depth of this shadow, from 0-5.
-         *
-         * @attribute z
-         * @type number
-         * @default 1
-         */
-        z: {value: 1, reflect: true},
+  <content></content>
 
-        /**
-         * If true, the shadow animates between z-depth changes.
-         *
-         * @attribute animated
-         * @type boolean
-         * @default false
-         */
-        animated: {value: false, reflect: true},
+</template>
 
-        /**
-         * Workaround: getComputedStyle is wrong sometimes so `paper-shadow`
-         * may overwrite the `position` CSS property. Set this property to
-         * true to prevent this.
-         *
-         * @attribute hasPosition
-         * @type boolean
-         * @default false
-         */
-        hasPosition: false
-      },
+<script>
+  Polymer('paper-shadow',{
 
-      // NOTE: include template so that styles are loaded, but remove
-      // so that we can decide dynamically what part to include
-      registerCallback: function(polymerElement) {
-        var template = polymerElement.querySelector('template');
-        this._style = template.content.querySelector('style');
-        this._style.removeAttribute('no-shim');
-      },
+    publish: {
 
-      fetchTemplate: function() {
-        return null;
-      },
+      /**
+       * The z-depth of this shadow, from 0-5. Setting this property
+       * after element creation has no effect. Use `setZ()` instead.
+       *
+       * @attribute z
+       * @type number
+       * @default 1
+       */
+      z: 1,
 
-      attached: function() {
-        // If no target is bound at attach, default the target to the parent
-        // element or shadow host.
-        if (!this.target) {
-          if (!this.parentElement && this.parentNode.host) {
-            this.target = this.parentNode.host;
-          } else if (this.parentElement && (window.ShadowDOMPolyfill ? this.parentElement !== wrap(document.body) : this.parentElement !== document.body)) {
-            this.target = this.parentElement;
-          }
-        }
-      },
+      /**
+       * Set this to true to animate the shadow when setting a new
+       * `z` value.
+       *
+       * @attribute animated
+       * @type boolean
+       * @default false
+       */
+      animated: false
 
-      targetChanged: function(old) {
-        if (old) {
-          this.removeShadow(old);
-        }
-        if (this.target) {
-          this.addShadow(this.target);
-        }
-      },
+    },
 
-      zChanged: function(old) {
-        if (this.target && this.target._paperShadow) {
-          var shadow = this.target._paperShadow;
-          ['top', 'bottom'].forEach(function(s) {
-            shadow[s].classList.remove('paper-shadow-' + s + '-z-' + old);
-            shadow[s].classList.add('paper-shadow-' + s + '-z-' + this.z);
-          }.bind(this));
-        }
-      },
-
-      animatedChanged: function() {
-        if (this.target && this.target._paperShadow) {
-          var shadow = this.target._paperShadow;
-          ['top', 'bottom'].forEach(function(s) {
-            if (this.animated) {
-              shadow[s].classList.add('paper-shadow-animated');
-            } else {
-              shadow[s].classList.remove('paper-shadow-animated');
-            }
-          }.bind(this));
-        }
-      },
-
-      addShadow: function(node) {
-        if (node._paperShadow) {
-          return;
-        }
-
-        if (!node._hasShadowStyle) {
-          if (!node.shadowRoot) {
-            node.createShadowRoot().innerHTML = '<content></content>';
-          }
-          this.installScopeStyle(this._style, 'shadow', node.shadowRoot);
-          node._hasShadowStyle = true;
-        }
-
-        var computed = getComputedStyle(node);
-        if (!this.hasPosition && computed.position === 'static') {
-          node.style.position = 'relative';
-        }
-        node.style.overflow = 'visible';
-
-        // Both the top and bottom shadows are children of the target, so
-        // it does not affect the classes and CSS properties of the target.
-        ['top', 'bottom'].forEach(function(s) {
-          var inner = (node._paperShadow && node._paperShadow[s]) || document.createElement('div');
-          inner.classList.add('paper-shadow');
-          inner.classList.add('paper-shadow-' + s + '-z-' + this.z);
-          if (this.animated) {
-            inner.classList.add('paper-shadow-animated');
-          }
-
-          if (node.shadowRoot) {
-            node.shadowRoot.insertBefore(inner, node.shadowRoot.firstChild);
-          } else {
-            node.insertBefore(inner, node.firstChild);
-          }
-
-          node._paperShadow = node._paperShadow || {};
-          node._paperShadow[s] = inner;
-        }.bind(this));
-
-      },
-
-      removeShadow: function(node) {
-        if (!node._paperShadow) {
-          return;
-        }
-
-        ['top', 'bottom'].forEach(function(s) {
-          node._paperShadow[s].remove();
-        });
-        node._paperShadow = null;
-
-        node.style.position = null;
+    setZ: function(newZ) {
+      if (this.z !== newZ) {
+        this.$['shadow-bottom'].classList.remove('paper-shadow-bottom-z-' + this.z);
+        this.$['shadow-bottom'].classList.add('paper-shadow-bottom-z-' + newZ);
+        this.$['shadow-top'].classList.remove('paper-shadow-top-z-' + this.z);
+        this.$['shadow-top'].classList.add('paper-shadow-top-z-' + newZ);
+        this.z = newZ;
       }
+    }
 
-    });
-  </script>
+  });
+</script>
 </polymer-element>
-
 
 <!--
 Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -3285,191 +2131,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 `paper-button-base` is the base class for button-like elements with ripple and optional shadow.
 
 @element paper-button-base
-@extends paper-focusable
+@mixins Polymer.CoreFocusable
 @status unstable
 -->
 
 
-<!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<!--
-/**
- * @group Paper Elements
- *
- * paper-focusable is a base class for paper elements that can be focused.
- *
- * @element paper-focusable
- * @status beta
- * @homepage github.io
- */
--->
 
 
+<script src="bower_components/core-focusable/polymer-mixin.js"></script>
+<script src="bower_components/core-focusable/core-focusable.js"></script>
 
-<polymer-element name="paper-focusable" attributes="active focused disabled isToggle" tabindex="0" on-down="{{downAction}}" on-up="{{upAction}}" on-focus="{{focusAction}}" on-blur="{{blurAction}}" on-contextmenu="{{contextMenuAction}}" assetpath="bower_components/paper-focusable/">
 
-  <template>
-    <style>
-      :host([disabled]) {
-        pointer-events: none;
-      }
-    </style>
-    <content></content>
-  </template>
+<polymer-element name="paper-button-base" tabindex="0" assetpath="bower_components/paper-button/">
 
-  <script>
-    Polymer('paper-focusable', {
+<script>
 
-      publish: {
+  (function() {
 
-        /**
-         * If true, the button is currently active either because the
-         * user is holding down the button, or the button is a toggle
-         * and is currently in the active state.
-         *
-         * @attribute active
-         * @type boolean
-         * @default false
-         */
-        active: {value: false, reflect: true},
+    var p = {
 
-        /**
-         * If true, the element currently has focus due to keyboard
-         * navigation.
-         *
-         * @attribute focused
-         * @type boolean
-         * @default false
-         */
-        focused: {value: false, reflect: true},
-
-        /**
-         * If true, the user is currently holding down the button.
-         *
-         * @attribute pressed
-         * @type boolean
-         * @default false
-         */
-        pressed: {value: false, reflect: true},
-
-        /**
-         * If true, the user cannot interact with this element.
-         *
-         * @attribute disabled
-         * @type boolean
-         * @default false
-         */
-        disabled: {value: false, reflect: true},
-
-        /**
-         * If true, the button toggles the active state with each tap.
-         * Otherwise, the button becomes active when the user is holding
-         * it down.
-         *
-         * @attribute isToggle
-         * @type boolean
-         * @default false
-         */
-        isToggle: {value: false, reflect: false}
-
+      eventDelegates: {
+        down: 'downAction'
       },
-
-      disabledChanged: function() {
-        if (this.disabled) {
-          this.removeAttribute('tabindex');
-        } else {
-          this.setAttribute('tabindex', 0);
-        }
-      },
-
-      downAction: function() {
-        this.pressed = true;
-
-        if (this.isToggle) {
-          this.active = !this.active;
-        } else {
-          this.active = true;
-        }
-      },
-
-      // Pulling up the context menu for an item should focus it; but we need to
-      // be careful about how we deal with down/up events surrounding context
-      // menus. The up event typically does not fire until the context menu
-      // closes: so we focus immediately.
-      //
-      // This fires _after_ downAction.
-      contextMenuAction: function(e) {
-        // Note that upAction may fire _again_ on the actual up event.
-        this.upAction(e);
-        this.focusAction();
-      },
-
-      upAction: function() {
-        this.pressed = false;
-
-        if (!this.isToggle) {
-          this.active = false;
-        }
-      },
-
-      focusAction: function() {
-        if (!this.pressed) {
-          // Only render the "focused" state if the element gains focus due to
-          // keyboard navigation.
-          this.focused = true;
-        }
-      },
-
-      blurAction: function() {
-        this.focused = false;
-      }
-
-    });
-
-  </script>
-</polymer-element>
-
-
-<polymer-element name="paper-button-base" extends="paper-focusable" assetpath="bower_components/paper-button/">
-
-  <script>
-    Polymer('paper-button-base',{
-
-      z: 1,
 
       activeChanged: function() {
         this.super();
 
-        if (this.active) {
-          // FIXME: remove when paper-ripple can have a default 'down' state.
-          if (!this.lastEvent) {
-            var rect = this.getBoundingClientRect();
-            this.lastEvent = {
-              x: rect.left + rect.width / 2,
-              y: rect.top + rect.height / 2
+        if (this.$.ripple) {
+          if (this.active) {
+            // FIXME: remove when paper-ripple can have a default 'down' state.
+            if (!this.lastEvent) {
+              var rect = this.getBoundingClientRect();
+              this.lastEvent = {
+                x: rect.left + rect.width / 2,
+                y: rect.top + rect.height / 2
+              }
             }
+            this.$.ripple.downAction(this.lastEvent);
+          } else {
+            this.$.ripple.upAction();
           }
-          this.$.ripple.downAction(this.lastEvent);
-        } else {
-          this.$.ripple.upAction();
         }
+
         this.adjustZ();
       },
 
       disabledChanged: function() {
-        this.super();
-        if (this.disabled) {
-          this.setAttribute('aria-disabled', '');
-        } else {
-          this.removeAttribute('aria-disabled');
-        }
+        this._disabledChanged();
         this.adjustZ();
       },
 
@@ -3486,17 +2194,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       adjustZ: function() {
+        if (!this.$.shadow) {
+          return;
+        }
         if (this.active) {
-          this.z = 2;
+          this.$.shadow.setZ(2);
         } else if (this.disabled) {
-          this.z = 0;
+          this.$.shadow.setZ(0);
         } else {
-          this.z = 1;
+          this.$.shadow.setZ(1);
         }
       },
 
       downAction: function(e) {
-        this.super(e);
+        this._downAction();
+
+        if (this.hasAttribute('noink')) {
+          return;
+        }
+
         this.lastEvent = e;
         if (!this.$.ripple) {
           var ripple = document.createElement('paper-ripple');
@@ -3515,8 +2231,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-    });
-  </script>
+    };
+
+    Polymer.mixin2(p, Polymer.CoreFocusable);
+    Polymer(p);
+
+  })();
+
+</script>
 </polymer-element>
 
 
@@ -3531,7 +2253,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         position: relative;
         box-sizing: border-box;
         min-width: 5.14em;
-        padding: 0.7em 0.57em;
         margin: 0 0.29em;
         background: transparent;
         text-align: center;
@@ -3539,6 +2260,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-transform: uppercase;
         outline: none;
         border-radius: 3px;
+        -moz-user-select: none;
+        -ms-user-select: none;
         -webkit-user-select: none;
         user-select: none;
         cursor: pointer;
@@ -3546,8 +2269,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       :host([disabled]) {
-        background: #eaeaea !important;
-        color: #a8a8a8 !important;
+        background: #eaeaea;
+        color: #a8a8a8;
         cursor: auto;
         pointer-events: none;
       }
@@ -3556,19 +2279,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-transform: inherit;
       }
 
+      #shadow {
+        border-radius: inherit;
+      }
+
       #ripple {
         pointer-events: none;
         z-index: -1;
       }
 
+      .button-content {
+        padding: 0.7em 0.57em
+      }
+
+      polyfill-next-selector { content: '.button-content > a'; }
+      ::content > a {
+        height: 100%;
+        padding: 0.7em 0.57em;
+        /* flex */
+        -ms-flex: 1 1 0.000000001px;
+        -webkit-flex: 1;
+        flex: 1;
+        -webkit-flex-basis: 0.000000001px;
+        flex-basis: 0.000000001px;
+      }
+
     </style>
 
-    <template if="{{raisedButton || raised}}">
-      <paper-shadow id="shadow" z="{{z}}" animated=""></paper-shadow>
+    <template if="{{raised}}">
+      <paper-shadow id="shadow" fit="" animated=""></paper-shadow>
     </template>
 
     <!-- this div is needed to position the ripple behind text content -->
-    <div relative="">
+    <div class="button-content" relative="" layout="" horizontal="" center-center="">
       <content></content>
       {{label}}
     </div>
@@ -3580,8 +2323,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       publish: {
 
-        label: '',
-
         /**
          * If true, the button will be styled with a shadow.
          *
@@ -3590,7 +2331,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          * @default false
          */
         raised: false,
-        raisedButton: false,
 
         /**
          * By default the ripple emanates from where the user touched the button.
@@ -3612,18 +2352,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          */
         fill: true
 
-      },
-
-      labelChanged: function() {
-        if (this.label) {
-          console.warn('The "label" property is deprecated.');
-        }
-      },
-
-      raisedButtonChanged: function() {
-        if (this.raisedButton) {
-          console.warn('The "raisedButton" property is deprecated.');
-        }
       }
 
     });
@@ -3652,7 +2380,7 @@ The `core-ajax` element exposes `XMLHttpRequest` functionality.
         on-core-response="{{handleResponse}}"></core-ajax>
 
 With `auto` set to `true`, the element performs a request whenever
-its `url` or `params` properties are changed.
+its `url`, `params` or `body` properties are changed.
 
 Note: The `params` attribute must be double quoted JSON.
 
@@ -3754,6 +2482,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       bodyMethods: {
         POST: 1,
         PUT: 1,
+        PATCH: 1,
         DELETE: 1
       },
 
@@ -3779,7 +2508,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   
 </polymer-element>
 
-<polymer-element name="core-ajax" hidden attributes="url handleAs auto params response error method headers body contentType withCredentials" assetpath="bower_components/core-ajax/">
+<polymer-element name="core-ajax" hidden attributes="url handleAs auto params response error method headers body contentType withCredentials progress loading" assetpath="bower_components/core-ajax/">
 <script>
 
   Polymer('core-ajax', {
@@ -3853,7 +2582,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     params: '',
 
     /**
-     * The response for the most recently made request, or null if it hasn't
+     * The response for the current request, or null if it hasn't
      * completed yet or the request resulted in error.
      *
      * @attribute response
@@ -3863,7 +2592,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     response: null,
 
     /**
-     * The error for the most recently made request, or null if it hasn't
+     * The error for the current request, or null if it hasn't
      * completed yet or the request resulted in success.
      *
      * @attribute error
@@ -3871,6 +2600,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @default null
      */
     error: null,
+
+    /**
+     * Whether the current request is currently loading.
+     *
+     * @attribute loading
+     * @type boolean
+     * @default false
+     */
+    loading: false,
+
+    /**
+     * The progress of the current request.
+     *
+     * @attribute progress
+     * @type {loaded: number, total: number, lengthComputable: boolean}
+     * @default {}
+     */
+    progress: null,
 
     /**
      * The HTTP method to use such as 'GET', 'POST', 'PUT', or 'DELETE'.
@@ -3946,6 +2693,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      */
     xhrArgs: null,
 
+    created: function() {
+      this.progress = {};
+    },
+
     ready: function() {
       this.xhr = document.createElement('core-xhr');
     },
@@ -3980,7 +2731,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.fire('core-error', {response: response, xhr: xhr});
     },
 
+    processProgress: function(progress, xhr) {
+      if (xhr !== this.activeRequest) {
+        return;
+      }
+      // We create a proxy object here because these fields
+      // on the progress event are readonly properties, which
+      // causes problems in common use cases (e.g. binding to
+      // <paper-progress> attributes).
+      var progressProxy = {
+        lengthComputable: progress.lengthComputable,
+        loaded: progress.loaded,
+        total: progress.total
+      }
+      this.progress = progressProxy;
+    },
+
     complete: function(xhr) {
+      if (xhr === this.activeRequest) {
+        this.loading = false;
+      }
       this.fire('core-complete', {response: xhr.status, xhr: xhr});
     },
 
@@ -4036,6 +2806,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.autoGo();
     },
 
+    bodyChanged: function() {
+      this.autoGo();
+    },
+
     autoChanged: function() {
       this.autoGo();
     },
@@ -4081,8 +2855,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       args.url = this.url;
       args.method = this.method;
 
-      this.response = this.error = null;
+      this.response = this.error = this.progress = null;
       this.activeRequest = args.url && this.xhr.request(args);
+      if (this.activeRequest) {
+        this.loading = true;
+        var activeRequest = this.activeRequest;
+        // IE < 10 doesn't support progress events.
+        if ('onprogress' in activeRequest) {
+          this.activeRequest.addEventListener(
+              'progress',
+              function(progress) {
+                this.processProgress(progress, activeRequest);
+              }.bind(this), false);
+        } else {
+          this.progress = {
+            lengthComputable: false,
+          }
+        }
+      }
       return this.activeRequest;
     }
 
@@ -4192,7 +2982,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 		<div class="contentbox">
 			<div center="" horizontal="" layout="" wrap="">
-				<paper-button on-tap="{{doSearch}}" raisedbutton="" class="colored" label="Search Now">
+				<paper-button on-tap="{{doSearch}}" raisedbutton="" class="colored">
+					Search Now
 				</paper-button>
 		    </div>
 			<hr>
@@ -4200,30 +2991,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 			    <div class="formbox" vertical="" layout="">
 			    	<span>
 			    		Keywords:&nbsp;&nbsp;
-						<core-input id="keywords" placeholder="Type keywords"></core-input>
+						<input is="core-input" id="keywords" placeholder="Type keywords">
 					</span><br>
 					
 					<span>
 			    		Board Number:&nbsp;&nbsp;
-						<core-input id="boardnumber" placeholder="Type a board number"></core-input>
+						<input is="core-input" id="boardnumber" placeholder="Type a board number">
 					</span><br>
 					<span>
 			    		Award Number:&nbsp;&nbsp;
-						<core-input id="awardnumber" placeholder="Type an award number"></core-input>
+						<input is="core-input" id="awardnumber" placeholder="Type an award number">
 					</span>
 				</div>
 				<div class="formbox" vertical="" layout="">
 					<span>
 			    		Union:&nbsp;&nbsp;
-						<core-input id="unions" placeholder="Type unions"></core-input>
+						<input is="core-input" id="unions" placeholder="Type unions">
 					</span><br>
 					<span>
 			    		Carrier:&nbsp;&nbsp;
-						<core-input id="carriers" placeholder="Type carriers"></core-input>
+						<input is="core-input" id="carriers" placeholder="Type carriers">
 					</span><br>
 					<span>
 			    		Craft:&nbsp;&nbsp;
-						<core-input id="crafts" placeholder="Type crafts"></core-input>
+						<input is="core-input" id="crafts" placeholder="Type crafts">
 					</span>
 				</div>
 				<div class="formbox" vertical="" layout="">
@@ -4261,9 +3052,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		    <!-- end of form -->
 		  </div>
 		  <div class="contentbox">
-		  	<paper-button on-tap="{{prevPage}}" raisedbutton="" class="colored" label="Prev. Page">
+		  	<paper-button on-tap="{{prevPage}}" raisedbutton="" class="colored">
+				Prev. Page
 			</paper-button>
-			<paper-button on-tap="{{nextPage}}" raisedbutton="" class="colored" label="Next Page">
+			<paper-button on-tap="{{nextPage}}" raisedbutton="" class="colored">
+				Next Page
 			</paper-button>
 			currently displaying from page {{currentPage + 1}}, responses = {{num_of_matches}}
 			<template repeat="{{result in results}}">

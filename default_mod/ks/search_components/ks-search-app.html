@@ -68,8 +68,8 @@
 				<paper-button 
 						on-tap="{{doSearch}}" 
 						raisedButton 
-						class="colored" 
-						label="Search Now">
+						class="colored">
+					Search Now
 				</paper-button>
 		    </div>
 			<hr>
@@ -77,30 +77,30 @@
 			    <div class="formbox" vertical layout>
 			    	<span>
 			    		Keywords:&nbsp;&nbsp;
-						<core-input id="keywords" placeholder="Type keywords"></core-input>
+						<input is="core-input" id="keywords" placeholder="Type keywords">
 					</span><br>
 					
 					<span>
 			    		Board Number:&nbsp;&nbsp;
-						<core-input id="boardnumber" placeholder="Type a board number"></core-input>
+						<input is="core-input" id="boardnumber" placeholder="Type a board number">
 					</span><br>
 					<span>
 			    		Award Number:&nbsp;&nbsp;
-						<core-input id="awardnumber" placeholder="Type an award number"></core-input>
+						<input is="core-input" id="awardnumber" placeholder="Type an award number">
 					</span>
 				</div>
 				<div class="formbox" vertical layout>
 					<span>
 			    		Union:&nbsp;&nbsp;
-						<core-input id="unions" placeholder="Type unions"></core-input>
+						<input is="core-input" id="unions" placeholder="Type unions">
 					</span><br>
 					<span>
 			    		Carrier:&nbsp;&nbsp;
-						<core-input id="carriers" placeholder="Type carriers"></core-input>
+						<input is="core-input" id="carriers" placeholder="Type carriers">
 					</span><br>
 					<span>
 			    		Craft:&nbsp;&nbsp;
-						<core-input id="crafts" placeholder="Type crafts"></core-input>
+						<input is="core-input" id="crafts" placeholder="Type crafts">
 					</span>
 				</div>
 				<div class="formbox" vertical layout>
@@ -141,14 +141,14 @@
 		  	<paper-button 
 					on-tap="{{prevPage}}" 
 					raisedButton 
-					class="colored" 
-					label="Prev. Page">
+					class="colored">
+				Prev. Page
 			</paper-button>
 			<paper-button 
 					on-tap="{{nextPage}}" 
 					raisedButton 
-					class="colored" 
-					label="Next Page">
+					class="colored">
+				Next Page
 			</paper-button>
 			currently displaying from page {{currentPage + 1}}, responses = {{num_of_matches}}
 			<template repeat="{{result in results}}">
