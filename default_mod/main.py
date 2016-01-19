@@ -16,7 +16,7 @@
 """Defines the routing for the app's non-admin handlers.
 """
 
-from searchserver import *
+
 import webapp2
 
 """handlers for client redirects"""
@@ -26,7 +26,6 @@ class SearchHandler(webapp2.RequestHandler):
     self.redirect("ks/build.html")
 
 app = webapp2.WSGIApplication(
-    [('/', SearchHandler),
-    ('/kssearch', KSSearch)
+    [('/', SearchHandler)
     ],
     debug=True)
