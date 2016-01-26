@@ -1,0 +1,63 @@
+<!doctype html>
+
+<!--
+@license
+Copyright (c) 2016 dean wagner wagner@nmb.gov. All rights reserved.
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>REGEX</title>
+    <style>
+    	body {
+			font-family: 'Roboto', 'Noto', sans-serif;
+			font-size: 14px;
+			padding: 24px;
+			color: blue;
+    	}
+		.nmbpanel {
+			background-color: #e0e0e0;
+			margin: 20px;
+			padding: 20px;
+			border-radius: 10px;
+			color:black; 
+		}
+	</style>
+  </head>
+  <body>
+
+    <h1>Hello Charlie</h1>
+
+    <div class="nmbpanel">
+      <h1>REGEX filtering Knowledge Store</h1>
+      Enter the name you would like to attach to the result file and the two query strings.
+      <div>
+        <form action="/regex" method="POST" enctype="multipart/form-data"> 
+      
+          <table>
+            <tr>
+              <td>text query string:</td>
+              <td><input type="text" name="querystr"></td>
+            </tr>
+            <tr>
+              <td>REGEX string:</td>
+              <td><input type="text" name="regexstr"><br></td>
+            </tr>
+            <tr>
+              <td>result file name:</td>
+              <td><input type="text" name="filename"><br></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><input type="submit" value="Get IT"></td>
+            </tr>
+          </table>
+                   
+        </form>
+      </div>
+    </div> 
+
+
+  </body>
+</html>

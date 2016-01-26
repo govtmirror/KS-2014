@@ -1,0 +1,15 @@
+application: the-option-328
+module: regex
+version: test-1-26
+runtime: python27
+threadsafe: true
+instance_class: F4
+api_version: 1
+
+
+handlers:
+- url: /ks
+  static_dir: ks
+
+- url: .*
+  script: main.app
