@@ -7,6 +7,7 @@ from google.appengine.api import taskqueue
 from google.appengine.api import search
 import cloudstorage as gcs
 import logging
+import re
 
 class RegexFilter(webapp2.RequestHandler):
   def post(self):
@@ -14,21 +15,22 @@ class RegexFilter(webapp2.RequestHandler):
     rStr = self.request.get('regex')
     filename = self.request.get('filename')
 
-    MY_OFFSET = 1000
-
-    load = "This is a test file.  I love the NMB."
-
-    num_returned = 1
-
     ccc = search.Cursor()
 
-    counter = 0
+    filename1 = "/regex-results/" + filename #+ str(counter)
+    write_retry_params = gcs.RetryParams(backoff_factor=1.1)
+
+    gcs_file = gcs.open(filename1,
+                'w',
+                content_type="text/plain",
+                # options={'x-goog-acl': 'public-read'},
+                retry_params=write_retry_params)
 
     while ccc != None:
 
-
+      logging.info("starting another batch")
       options=search.QueryOptions(
-        limit=MY_OFFSET,
+        limit=100,
         cursor=ccc,
         returned_fields=[
           'link',
@@ -38,30 +40,25 @@ class RegexFilter(webapp2.RequestHandler):
       query = search.Query(qStr, options)
       regexresults = search.Index(name="ksdocs2").search(query)
 
-      num_returned = regexresults.number_found
       ccc = regexresults.cursor
 
-      result_set = []
       for doc in regexresults.results:
-        temp_str = ""
-        for stuff in doc.fields:
-          temp_str = temp_str + " " + stuff.value
-        result_set.append(temp_str)
+        candidateLink = doc.fields[0].value.encode('ascii','ignore')
+        candidateStr = doc.fields[1].value.encode('ascii','ignore') 
+         
+        candidateId = doc.doc_id.encode('ascii','ignore') 
+
+        nospaces=candidateStr.replace(' ','')
+        nospacesorlinefeeds = nospaces.replace('\n','')
+
+        modified = re.findall(rStr,nospacesorlinefeeds)
+        if len(modified) > 0:
+          yoStr = "found SSN, " + candidateId + ", " + candidateLink + ", " + modified[0] + "\n"
+          gcs_file.write(yoStr)
+          logging.info("found one! " + candidateLink)
 
 
-      counter += 1
 
-      filename1 = "/regex-results/" + filename + str(counter)
-      write_retry_params = gcs.RetryParams(backoff_factor=1.1)
-
-      gcs_file = gcs.open(filename1,
-                'w',
-                content_type="text/plain",
-                # options={'x-goog-acl': 'public-read'},
-                retry_params=write_retry_params)
-      for docStr in result_set:
-        yoStr = docStr.encode('ascii','ignore') 
-        gcs_file.write(yoStr)
-
-      gcs_file.close()
+    gcs_file.close()
+    logging.info("finished")
 

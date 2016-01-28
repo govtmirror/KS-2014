@@ -1,6 +1,6 @@
 application: the-option-328
 module: regex
-version: test-1-26
+version: test-1-28
 runtime: python27
 threadsafe: true
 instance_class: F4
