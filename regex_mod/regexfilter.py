@@ -16,6 +16,8 @@ class RegexFilter(webapp2.RequestHandler):
     filename = self.request.get('filename')
 
     ccc = search.Cursor()
+    counter = 0
+    hits = 0
 
     filename1 = "/regex-results/" + filename #+ str(counter)
     write_retry_params = gcs.RetryParams(backoff_factor=1.1)
@@ -25,7 +27,9 @@ class RegexFilter(webapp2.RequestHandler):
                 content_type="text/plain",
                 # options={'x-goog-acl': 'public-read'},
                 retry_params=write_retry_params)
+    gcs_file.write("Query = " + rStr.encode('ascii','ignore') + "\n\n")
 
+    
     while ccc != None:
 
       logging.info("starting another batch")
@@ -43,22 +47,29 @@ class RegexFilter(webapp2.RequestHandler):
       ccc = regexresults.cursor
 
       for doc in regexresults.results:
+        counter += 1
         candidateLink = doc.fields[0].value.encode('ascii','ignore')
         candidateStr = doc.fields[1].value.encode('ascii','ignore') 
          
         candidateId = doc.doc_id.encode('ascii','ignore') 
 
-        nospaces=candidateStr.replace(' ','')
-        nospacesorlinefeeds = nospaces.replace('\n','')
+        # nospaces=candidateStr.replace(' ','')
+        # nospacesorlinefeeds = nospaces.replace('\n','')
+        # modified = re.findall(rStr,nospacesorlinefeeds)
 
-        modified = re.findall(rStr,nospacesorlinefeeds)
+        modified = re.findall(rStr,candidateStr)
+
         if len(modified) > 0:
-          yoStr = "found SSN, " + candidateId + ", " + candidateLink + ", " + modified[0] + "\n"
+          hits += 1
+          charlieStr = ""
+          for charlie in modified:
+            charlieStr = charlieStr + "    " + charlie + "\n"
+          yoStr = "found regex, " + candidateId + ", " + candidateLink + "\n" + charlieStr
           gcs_file.write(yoStr)
           logging.info("found one! " + candidateLink)
 
 
-
+    gcs_file.write("\n\nfound " + str(hits) + " out of " + str(counter))
     gcs_file.close()
     logging.info("finished")
 
