@@ -95,5 +95,6 @@ class KSSearch(webapp2.RequestHandler):
 		}
 
 		""" assemble and send the response """
+		self.response.headers['Access-Control-Allow-Origin'] = '*'
 		self.response.content_type = 'application/json'
 		self.response.write(json.encode(rspObj))

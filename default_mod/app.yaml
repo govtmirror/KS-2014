@@ -1,6 +1,6 @@
 application: the-option-328
 module: default
-version: prod-11-19
+version: test-client
 runtime: python27
 threadsafe: true
 api_version: 1
